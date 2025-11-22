@@ -12,6 +12,15 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TutorVerse">
         <activity
+            android:name=".StudentDashboardActivity"
+            android:exported="false" />
+        <activity
+            android:name=".TutorCalendarActivity"
+            android:exported="false" />
+        <activity
+            android:name=".TutorDashboardActivity"
+            android:exported="false" />
+        <activity
             android:name=".ProfileActivity"
             android:exported="false" />
         <activity
@@ -23,9 +32,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".LoginActivity"
             android:exported="false" />
+        <activity android:name=".TeacherAvailabilityActivity" />
+        <activity android:name=".ScheduleActivity" />
+        <activity android:name=".CourseSelectionActivity" />
+
         <activity
             android:name=".MainActivity"
             android:exported="false" />

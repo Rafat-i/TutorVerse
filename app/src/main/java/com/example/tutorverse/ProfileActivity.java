@@ -7,8 +7,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import models.User;
-
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
@@ -56,9 +54,7 @@ public class ProfileActivity extends AppCompatActivity {
         auth = FirebaseAuth.getInstance();
         db = FirebaseDatabase.getInstance().getReference("users");
 
-
         btnUpdateUsername.setOnClickListener(v -> updateUsername());
-
 
         btnLogout.setOnClickListener(v -> {
             auth.signOut();
@@ -87,9 +83,9 @@ public class ProfileActivity extends AppCompatActivity {
                 tvEmail.setText(email);
                 tvRole.setText(role);
             }
-        }).addOnFailureListener(e -> {
-            Toast.makeText(this, "Failed to load profile", Toast.LENGTH_SHORT).show();
-        });
+        }).addOnFailureListener(e ->
+                Toast.makeText(this, "Failed to load profile", Toast.LENGTH_SHORT).show()
+        );
     }
 
     private void updateUsername() {

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#F7F8FA"
+    android:padding="24dp"
+    tools:context=".CourseSelectionActivity">
+
+    <!-- Top row: Back button + title -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="12dp">
+
+        <TextView
+            android:id="@+id/tvCourseTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="Select Course"
+            android:textColor="#1A3D7C"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/btnBack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#1A3D7C"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:text="Back"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold"
+            android:layout_marginStart="100dp"/>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tvCourseInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Only courses with tutor availability are shown."
+        android:textSize="14sp"
+        android:textColor="#555555"
+        android:layout_marginBottom="12dp" />
+
+    <ListView
+        android:id="@+id/lvCourses"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:divider="#DDDDDD"
+        android:dividerHeight="4dp" />
+
+</LinearLayout>
