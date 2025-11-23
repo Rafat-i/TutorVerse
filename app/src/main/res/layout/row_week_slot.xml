@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="4dp">
+
+    <TextView
+        android:id="@+id/tvTime"
+        android:layout_width="70dp"
+        android:layout_height="40dp"
+        android:text="08:00 - 09:00"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        android:textColor="#1A3D7C"
+        android:gravity="center" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_weight="1"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/cellMon"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textSize="12sp"
+            android:background="@drawable/cell_slot_background" />
+
+        <TextView
+            android:id="@+id/cellTue"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textSize="12sp"
+            android:background="@drawable/cell_slot_background" />
+
+        <TextView
+            android:id="@+id/cellWed"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textSize="12sp"
+            android:background="@drawable/cell_slot_background" />
+
+        <TextView
+            android:id="@+id/cellThu"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textSize="12sp"
+            android:background="@drawable/cell_slot_background" />
+
+        <TextView
+            android:id="@+id/cellFri"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textSize="12sp"
+            android:background="@drawable/cell_slot_background" />
+    </LinearLayout>
+</LinearLayout>

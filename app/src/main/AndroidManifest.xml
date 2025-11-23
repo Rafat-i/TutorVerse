@@ -24,6 +24,9 @@
             android:name=".ProfileActivity"
             android:exported="false" />
         <activity
+            android:name=".TutorAvailabilityActivity"
+            android:exported="false" />
+        <activity
             android:name=".RegisterActivity"
             android:exported="true">
             <intent-filter>
@@ -36,7 +39,7 @@
         <activity
             android:name=".LoginActivity"
             android:exported="false" />
-        <activity android:name=".TeacherAvailabilityActivity" />
+
         <activity android:name=".ScheduleActivity" />
         <activity android:name=".CourseSelectionActivity" />
 

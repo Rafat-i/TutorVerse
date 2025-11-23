@@ -3,7 +3,6 @@ package com.example.tutorverse;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -20,10 +19,9 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
-public class TeacherAvailabilityActivity extends AppCompatActivity {
+public class TutorAvailabilityActivity extends AppCompatActivity {
 
-    Spinner spCourse, spDay;
-    EditText edStartTime, edEndTime;
+    Spinner spCourse, spDay, spStartTime, spEndTime;
     Button btnSaveAvailability, btnBack;
 
     FirebaseAuth auth;
@@ -36,6 +34,12 @@ public class TeacherAvailabilityActivity extends AppCompatActivity {
 
     ArrayList<String> courseList;
     ArrayAdapter<String> courseAdapter;
+
+    String[] allTimes = {
+            "08:00", "09:00", "10:00", "11:00",
+            "12:00", "13:00", "14:00", "15:00",
+            "16:00", "17:00", "18:00"
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,12 +55,16 @@ public class TeacherAvailabilityActivity extends AppCompatActivity {
 
         spCourse = findViewById(R.id.spCourse);
         spDay = findViewById(R.id.spDay);
-        edStartTime = findViewById(R.id.edStartTime);
-        edEndTime = findViewById(R.id.edEndTime);
+        spStartTime = findViewById(R.id.spStartTime);
+        spEndTime = findViewById(R.id.spEndTime);
         btnSaveAvailability = findViewById(R.id.btnSaveAvailability);
         btnBack = findViewById(R.id.btnBack);
 
         auth = FirebaseAuth.getInstance();
+        if (auth.getCurrentUser() == null) {
+            finish();
+            return;
+        }
         uid = auth.getCurrentUser().getUid();
 
         dbUsers = FirebaseDatabase.getInstance().getReference("users").child(uid);
@@ -73,6 +81,12 @@ public class TeacherAvailabilityActivity extends AppCompatActivity {
                 new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, days);
         dayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spDay.setAdapter(dayAdapter);
+
+        ArrayAdapter<String> timeAdapter =
+                new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, allTimes);
+        timeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spStartTime.setAdapter(timeAdapter);
+        spEndTime.setAdapter(timeAdapter);
 
         courseList = new ArrayList<>();
         courseAdapter = new ArrayAdapter<>(this,
@@ -109,6 +123,13 @@ public class TeacherAvailabilityActivity extends AppCompatActivity {
         );
     }
 
+    private int indexOfTime(String time) {
+        for (int i = 0; i < allTimes.length; i++) {
+            if (allTimes[i].equals(time)) return i;
+        }
+        return -1;
+    }
+
     private void saveAvailability() {
         if (courseList.isEmpty()) {
             Toast.makeText(this, "No course selected.", Toast.LENGTH_SHORT).show();
@@ -117,32 +138,56 @@ public class TeacherAvailabilityActivity extends AppCompatActivity {
 
         String course = spCourse.getSelectedItem().toString();
         String day = spDay.getSelectedItem().toString();
-        String start = edStartTime.getText().toString().trim();
-        String end = edEndTime.getText().toString().trim();
+        String start = spStartTime.getSelectedItem().toString();
+        String end = spEndTime.getSelectedItem().toString();
 
-        if (start.isEmpty() || end.isEmpty()) {
-            Toast.makeText(this, "Please enter start and end time", Toast.LENGTH_SHORT).show();
+        int startIndex = indexOfTime(start);
+        int endIndex = indexOfTime(end);
+
+        if (startIndex == -1 || endIndex == -1) {
+            Toast.makeText(this, "Invalid time selection.", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        if (!tutorName.isEmpty()) {
-            dbAvailability.child("tutorName").setValue(tutorName);
+        if (startIndex >= endIndex) {
+            Toast.makeText(this, "End time must be after start time.", Toast.LENGTH_SHORT).show();
+            return;
         }
 
-        DatabaseReference dayRef = dbAvailability
-                .child("courses")
+        DatabaseReference dayRef = dbAvailability.child("courses")
                 .child(course)
                 .child(day);
 
-        dayRef.child("start").setValue(start);
-        dayRef.child("end").setValue(end)
-                .addOnSuccessListener(unused -> {
-                    Toast.makeText(this, "Availability saved", Toast.LENGTH_SHORT).show();
-                    edStartTime.setText("");
-                    edEndTime.setText("");
-                })
-                .addOnFailureListener(e ->
-                        Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_LONG).show()
-                );
+        dayRef.get().addOnSuccessListener(snapshot -> {
+            boolean conflict = false;
+
+            for (int i = startIndex; i < endIndex; i++) {
+                String slot = allTimes[i];
+                if (snapshot.hasChild(slot)) {
+                    conflict = true;
+                    break;
+                }
+            }
+
+            if (conflict) {
+                Toast.makeText(this,
+                        "You already have availability for this course at that time.",
+                        Toast.LENGTH_LONG).show();
+                return;
+            }
+
+            if (!tutorName.isEmpty()) {
+                dbAvailability.child("tutorName").setValue(tutorName);
+            }
+
+            for (int i = startIndex; i < endIndex; i++) {
+                String slot = allTimes[i];
+                dayRef.child(slot).setValue(true);
+            }
+
+            Toast.makeText(this, "Availability saved", Toast.LENGTH_SHORT).show();
+        }).addOnFailureListener(e ->
+                Toast.makeText(this, "Error checking availability.", Toast.LENGTH_SHORT).show()
+        );
     }
 }

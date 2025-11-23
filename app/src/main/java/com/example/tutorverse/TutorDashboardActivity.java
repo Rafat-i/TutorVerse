@@ -22,7 +22,7 @@ public class TutorDashboardActivity extends AppCompatActivity {
         btnBack = findViewById(R.id.btnBack);
 
         btnSetAvailability.setOnClickListener(v ->
-                startActivity(new Intent(this, TeacherAvailabilityActivity.class)));
+                startActivity(new Intent(this, TutorAvailabilityActivity.class)));
 
         btnViewBookings.setOnClickListener(v ->
                 startActivity(new Intent(this, TutorCalendarActivity.class)));

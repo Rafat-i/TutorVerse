@@ -1,7 +1,7 @@
 package com.example.tutorverse;
 
 import android.os.Bundle;
-import android.widget.CalendarView;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -19,19 +19,23 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Locale;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class TutorCalendarActivity extends AppCompatActivity {
 
-    CalendarView calendarView;
-    ListView lvBookings;
+    ListView lvWeekly;
+    Button btnBackCalendar;
 
     FirebaseAuth auth;
     DatabaseReference dbAvailabilityCourses;
 
-    ArrayList<String> items;
-    BookingListAdapter adapter;   // simple ArrayAdapter<String> we made earlier
+    List<String> timeStarts;
+    List<String> timeLabels;
+    Map<String, String> slotCourseMap;
+
+    WeeklyScheduleAdapter adapter;
 
     String tutorUid;
 
@@ -47,10 +51,16 @@ public class TutorCalendarActivity extends AppCompatActivity {
             return insets;
         });
 
-        calendarView = findViewById(R.id.calendarView);
-        lvBookings = findViewById(R.id.lvBookings);
+        lvWeekly = findViewById(R.id.lvWeekly);
+        btnBackCalendar = findViewById(R.id.btnBackCalendar);
+
+        btnBackCalendar.setOnClickListener(v -> finish());
 
         auth = FirebaseAuth.getInstance();
+        if (auth.getCurrentUser() == null) {
+            finish();
+            return;
+        }
         tutorUid = auth.getCurrentUser().getUid();
 
         dbAvailabilityCourses = FirebaseDatabase.getInstance()
@@ -58,65 +68,56 @@ public class TutorCalendarActivity extends AppCompatActivity {
                 .child(tutorUid)
                 .child("courses");
 
-        items = new ArrayList<>();
-        adapter = new BookingListAdapter(this, items);
-        lvBookings.setAdapter(adapter);
+        String[] fullTimes = {
+                "08:00", "09:00", "10:00", "11:00",
+                "12:00", "13:00", "14:00", "15:00",
+                "16:00", "17:00", "18:00"
+        };
 
-        long todayMillis = calendarView.getDate();
-        String todayDayName = getDayNameFromMillis(todayMillis);
-        loadAvailabilityForDay(todayDayName);
+        timeStarts = new ArrayList<>();
+        timeLabels = new ArrayList<>();
 
-        calendarView.setOnDateChangeListener((view, year, month, dayOfMonth) -> {
-            Calendar c = Calendar.getInstance();
-            c.set(year, month, dayOfMonth);
-            String dayName = getDayNameFromMillis(c.getTimeInMillis());
-            loadAvailabilityForDay(dayName);
-        });
-    }
-
-    private String getDayNameFromMillis(long millis) {
-        Calendar c = Calendar.getInstance();
-        c.setTimeInMillis(millis);
-        int dow = c.get(Calendar.DAY_OF_WEEK);
-        switch (dow) {
-            case Calendar.MONDAY: return "Monday";
-            case Calendar.TUESDAY: return "Tuesday";
-            case Calendar.WEDNESDAY: return "Wednesday";
-            case Calendar.THURSDAY: return "Thursday";
-            case Calendar.FRIDAY: return "Friday";
-            case Calendar.SATURDAY: return "Saturday";
-            case Calendar.SUNDAY: return "Sunday";
+        for (int i = 0; i < fullTimes.length - 1; i++) {
+            timeStarts.add(fullTimes[i]);
+            String label = fullTimes[i] + " - " + fullTimes[i + 1];
+            timeLabels.add(label);
         }
-        return "Monday";
+
+        slotCourseMap = new HashMap<>();
+
+        adapter = new WeeklyScheduleAdapter(this, timeStarts, timeLabels, slotCourseMap);
+        lvWeekly.setAdapter(adapter);
+
+        loadAvailability();
     }
 
-    private void loadAvailabilityForDay(String dayName) {
+    private void loadAvailability() {
         dbAvailabilityCourses.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
-                items.clear();
+                slotCourseMap.clear();
 
                 if (!snapshot.exists()) {
-                    items.add("No availability saved.");
                     adapter.notifyDataSetChanged();
                     return;
                 }
 
                 for (DataSnapshot courseSnap : snapshot.getChildren()) {
                     String courseName = courseSnap.getKey();
-                    DataSnapshot daySnap = courseSnap.child(dayName);
+                    if (courseName == null) continue;
 
-                    if (daySnap.exists()) {
-                        String start = daySnap.child("start").getValue(String.class);
-                        String end = daySnap.child("end").getValue(String.class);
+                    for (DataSnapshot daySnap : courseSnap.getChildren()) {
+                        String dayName = daySnap.getKey();
+                        if (dayName == null) continue;
 
-                        String line = courseName + " - " + dayName + " " + start + " to " + end;
-                        items.add(line);
+                        for (DataSnapshot slotSnap : daySnap.getChildren()) {
+                            String timeKey = slotSnap.getKey();
+                            if (timeKey == null) continue;
+
+                            String mapKey = dayName + "|" + timeKey;
+                            slotCourseMap.put(mapKey, courseName);
+                        }
                     }
-                }
-
-                if (items.isEmpty()) {
-                    items.add("No availability on " + dayName);
                 }
 
                 adapter.notifyDataSetChanged();
