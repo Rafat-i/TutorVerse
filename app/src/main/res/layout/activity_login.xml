@@ -5,11 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:gravity="center_horizontal"
+    android:gravity="center"
     android:background="#F7F8FA"
-    android:padding="24dp"
     tools:context=".LoginActivity">
-
 
     <TextView
         android:text="Login"
@@ -19,7 +17,6 @@
         android:layout_marginBottom="28dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
-
 
     <EditText
         android:id="@+id/edEmail"
@@ -31,7 +28,6 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp" />
 
-
     <EditText
         android:id="@+id/edPassword"
         android:hint="Password"
@@ -41,7 +37,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp" />
-
 
     <Button
         android:id="@+id/btnLogin"
@@ -53,7 +48,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="12dp" />
-
 
     <TextView
         android:id="@+id/tvRegisterLink"

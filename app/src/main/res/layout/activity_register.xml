@@ -5,9 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:gravity="center_horizontal"
+    android:gravity="center"
     android:background="#F7F8FA"
-    android:padding="24dp"
     tools:context=".RegisterActivity">
 
     <TextView

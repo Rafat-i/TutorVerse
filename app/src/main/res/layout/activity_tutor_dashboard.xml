@@ -4,15 +4,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#F7F8FA"
-    android:padding="24dp">
+    android:gravity="center"
+    android:background="#F7F8FA">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:layout_marginBottom="24dp">
+        android:layout_marginBottom="40dp">
 
         <TextView
             android:id="@+id/tvTitle"
@@ -32,7 +32,7 @@
             android:id="@+id/btnBack"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Back"
+            android:text="Sign Out"
             android:textColor="#FFFFFF"
             android:textStyle="bold"
             android:backgroundTint="#1A3D7C"

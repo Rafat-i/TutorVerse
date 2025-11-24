@@ -2,7 +2,7 @@ package com.example.tutorverse;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.ArrayAdapter;
+import android.util.TypedValue;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -29,7 +29,7 @@ public class CourseSelectionActivity extends AppCompatActivity {
     TextView tvCourseTitle, tvCourseInfo;
 
     ArrayList<String> courses;
-    ArrayAdapter<String> adapter;
+    CoursePillAdapter adapter; // CHANGED
 
     DatabaseReference dbAvailability;
 
@@ -39,9 +39,17 @@ public class CourseSelectionActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_course_selection);
 
+        int paddingPx = (int) TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP, 24, getResources().getDisplayMetrics());
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            v.setPadding(
+                    systemBars.left + paddingPx,
+                    systemBars.top + paddingPx,
+                    systemBars.right + paddingPx,
+                    systemBars.bottom + paddingPx
+            );
             return insets;
         });
 
@@ -50,18 +58,18 @@ public class CourseSelectionActivity extends AppCompatActivity {
         tvCourseTitle = findViewById(R.id.tvCourseTitle);
         tvCourseInfo = findViewById(R.id.tvCourseInfo);
 
+        lvCourses.setDivider(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
+        lvCourses.setDividerHeight(50);
+
         dbAvailability = FirebaseDatabase.getInstance().getReference("availability");
 
         courses = new ArrayList<>();
-        adapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_list_item_1,
-                courses);
+        // Use the new Adapter
+        adapter = new CoursePillAdapter(this, courses);
         lvCourses.setAdapter(adapter);
 
-        // Back button -> go back to Profile
         btnBack.setOnClickListener(v -> finish());
 
-        // When user taps a course -> go to ScheduleActivity
         lvCourses.setOnItemClickListener((parent, view, position, id) -> {
             String selectedCourse = courses.get(position);
             Intent i = new Intent(CourseSelectionActivity.this, ScheduleActivity.class);
@@ -74,10 +82,7 @@ public class CourseSelectionActivity extends AppCompatActivity {
 
     private void loadCoursesFromFirebase() {
         dbAvailability.get().addOnSuccessListener(snapshot -> {
-
             Set<String> courseSet = new HashSet<>();
-
-            // Loop over all tutors
             for (DataSnapshot tutorSnap : snapshot.getChildren()) {
                 DataSnapshot coursesSnap = tutorSnap.child("courses");
                 for (DataSnapshot courseSnap : coursesSnap.getChildren()) {
@@ -87,7 +92,6 @@ public class CourseSelectionActivity extends AppCompatActivity {
                     }
                 }
             }
-
             courses.clear();
             courses.addAll(courseSet);
             adapter.notifyDataSetChanged();
@@ -95,7 +99,6 @@ public class CourseSelectionActivity extends AppCompatActivity {
             if (courses.isEmpty()) {
                 tvCourseInfo.setText("No courses have availability yet.");
             }
-
         }).addOnFailureListener(e -> {
             Toast.makeText(this, "Error loading courses: " + e.getMessage(), Toast.LENGTH_LONG).show();
         });

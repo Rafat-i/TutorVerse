@@ -7,6 +7,7 @@ import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,6 +15,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -32,10 +34,13 @@ public class ScheduleActivity extends AppCompatActivity {
     ScheduleGridAdapter gridAdapter;
     ArrayList<ScheduleMeeting> meetingList;
     ScheduleMeetingAdapter meetingAdapter;
+
     DatabaseReference dbAvailability;
+    DatabaseReference dbBookings;
+    FirebaseAuth auth;
+
     String selectedCourse = "";
     Button btnBackSchedule;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,8 +54,15 @@ public class ScheduleActivity extends AppCompatActivity {
             return insets;
         });
 
+        auth = FirebaseAuth.getInstance();
+        if (auth.getCurrentUser() == null) {
+            finish();
+            return;
+        }
+
         btnBackSchedule = findViewById(R.id.btnBackSchedule);
         btnBackSchedule.setOnClickListener(v -> finish());
+
         tvSelectedCourse = findViewById(R.id.tvSelectedCourse);
         tvSelectedDay = findViewById(R.id.tvSelectedDay);
         gridDays = findViewById(R.id.gridDays);
@@ -60,7 +72,7 @@ public class ScheduleActivity extends AppCompatActivity {
         layoutDayContent = findViewById(R.id.layoutDayContent);
         layoutTutorContent = findViewById(R.id.layoutTutorContent);
 
-
+        // Toggle Sections
         tvDaySectionHeader.setOnClickListener(v -> {
             if (layoutDayContent.getVisibility() == View.VISIBLE) {
                 layoutDayContent.setVisibility(View.GONE);
@@ -86,6 +98,7 @@ public class ScheduleActivity extends AppCompatActivity {
         tvSelectedCourse.setText("Course: " + selectedCourse);
 
         dbAvailability = FirebaseDatabase.getInstance().getReference("availability");
+        dbBookings = FirebaseDatabase.getInstance().getReference("bookings");
 
         gridAdapter = new ScheduleGridAdapter(this);
         gridDays.setAdapter(gridAdapter);
@@ -95,6 +108,8 @@ public class ScheduleActivity extends AppCompatActivity {
         lvSchedule.setAdapter(meetingAdapter);
 
         gridDays.setOnItemClickListener((parent, view, position, id) -> {
+            // Highlighting Logic
+            gridAdapter.setSelectedPosition(position);
             String dayName = gridAdapter.getFullDay(position);
             tvSelectedDay.setText("Day: " + dayName);
             loadMeetingsFor(selectedCourse, dayName);
@@ -103,29 +118,63 @@ public class ScheduleActivity extends AppCompatActivity {
 
     private void loadMeetingsFor(String course, String dayName) {
         meetingList.clear();
+        meetingAdapter.notifyDataSetChanged();
 
-        dbAvailability.get().addOnSuccessListener(snapshot -> {
-            for (DataSnapshot tutorSnap : snapshot.getChildren()) {
+        // 1. Get all availability
+        dbAvailability.get().addOnSuccessListener(availSnapshot -> {
 
-                String tutorName = tutorSnap.child("tutorName").getValue(String.class);
-                if (tutorName == null) continue;
+            // 2. Get all existing bookings to check conflicts
+            dbBookings.get().addOnSuccessListener(bookingSnapshot -> {
 
-                if (!tutorSnap.child("courses").hasChild(course)) continue;
-                if (!tutorSnap.child("courses").child(course).hasChild(dayName)) continue;
+                for (DataSnapshot tutorSnap : availSnapshot.getChildren()) {
+                    String tutorUID = tutorSnap.getKey();
+                    String tutorName = tutorSnap.child("tutorName").getValue(String.class);
+                    if (tutorName == null) tutorName = "Unknown Tutor";
 
-                DataSnapshot daySnap = tutorSnap.child("courses").child(course).child(dayName);
+                    // Drill down: courses -> CourseName -> DayName
+                    if (!tutorSnap.child("courses").child(course).child(dayName).exists()) continue;
 
-                String start = daySnap.child("start").getValue(String.class);
-                String end = daySnap.child("end").getValue(String.class);
+                    DataSnapshot slotsSnap = tutorSnap.child("courses").child(course).child(dayName);
 
-                if (start == null || end == null) continue;
+                    // Iterate through every time slot (e.g., "08:00")
+                    for (DataSnapshot timeSnap : slotsSnap.getChildren()) {
+                        String startTime = timeSnap.getKey(); // "08:00"
+                        if (startTime == null) continue;
 
-                String timeText = dayName + " " + start + " - " + end;
+                        // Check if this slot is already booked in /bookings/{tutorUID}/{day|time}
+                        String bookingKey = dayName + "|" + startTime;
+                        boolean isTaken = false;
+                        String takenBy = "";
 
-                meetingList.add(new ScheduleMeeting(tutorName, course, timeText, false));
-            }
+                        if (bookingSnapshot.child(tutorUID).hasChild(bookingKey)) {
+                            isTaken = true;
+                            takenBy = bookingSnapshot.child(tutorUID).child(bookingKey).child("studentName").getValue(String.class);
+                        }
 
-            meetingAdapter.notifyDataSetChanged();
+                        // Create meeting object
+                        ScheduleMeeting meeting = new ScheduleMeeting(
+                                tutorName,
+                                course,
+                                dayName + " " + startTime, // Display String
+                                isTaken
+                        );
+
+                        // Store hidden metadata for booking logic
+                        meeting.setTutorUid(tutorUID);
+                        meeting.setDay(dayName);
+                        meeting.setStartTime(startTime);
+                        meeting.setTakenBy(takenBy); // To check if "I" booked it
+
+                        meetingList.add(meeting);
+                    }
+                }
+
+                if (meetingList.isEmpty()) {
+                    Toast.makeText(this, "No tutors available for " + dayName, Toast.LENGTH_SHORT).show();
+                }
+
+                meetingAdapter.notifyDataSetChanged();
+            });
         });
     }
 }

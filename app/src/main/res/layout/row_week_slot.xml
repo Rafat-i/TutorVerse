@@ -3,21 +3,22 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:padding="4dp">
+    android:padding="1dp">
 
     <TextView
         android:id="@+id/tvTime"
-        android:layout_width="70dp"
-        android:layout_height="40dp"
-        android:text="08:00 - 09:00"
-        android:textSize="12sp"
+        android:layout_width="60dp"
+        android:layout_height="45dp"
+        android:text="08:00\n09:00"
+        android:textSize="11sp"
         android:textStyle="bold"
-        android:textColor="#1A3D7C"
-        android:gravity="center" />
+        android:textColor="#555555"
+        android:gravity="center_vertical|right"
+        android:paddingRight="8dp" />
 
     <LinearLayout
         android:layout_width="0dp"
-        android:layout_height="40dp"
+        android:layout_height="45dp"
         android:layout_weight="1"
         android:orientation="horizontal">
 
@@ -27,8 +28,10 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
-            android:textSize="12sp"
-            android:background="@drawable/cell_slot_background" />
+            android:textSize="10sp"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold"
+            android:layout_margin="1dp" />
 
         <TextView
             android:id="@+id/cellTue"
@@ -36,8 +39,10 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
-            android:textSize="12sp"
-            android:background="@drawable/cell_slot_background" />
+            android:textSize="10sp"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold"
+            android:layout_margin="1dp" />
 
         <TextView
             android:id="@+id/cellWed"
@@ -45,8 +50,10 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
-            android:textSize="12sp"
-            android:background="@drawable/cell_slot_background" />
+            android:textSize="10sp"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold"
+            android:layout_margin="1dp" />
 
         <TextView
             android:id="@+id/cellThu"
@@ -54,8 +61,10 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
-            android:textSize="12sp"
-            android:background="@drawable/cell_slot_background" />
+            android:textSize="10sp"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold"
+            android:layout_margin="1dp" />
 
         <TextView
             android:id="@+id/cellFri"
@@ -63,7 +72,9 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
-            android:textSize="12sp"
-            android:background="@drawable/cell_slot_background" />
+            android:textSize="10sp"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold"
+            android:layout_margin="1dp" />
     </LinearLayout>
 </LinearLayout>

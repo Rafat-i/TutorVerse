@@ -1,6 +1,7 @@
 package com.example.tutorverse;
 
 import android.os.Bundle;
+import android.util.TypedValue;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -45,9 +46,17 @@ public class TutorCalendarActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_tutor_calendar);
 
+        int paddingPx = (int) TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP, 24, getResources().getDisplayMetrics());
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            v.setPadding(
+                    systemBars.left + paddingPx,
+                    systemBars.top + paddingPx,
+                    systemBars.right + paddingPx,
+                    systemBars.bottom + paddingPx
+            );
             return insets;
         });
 
@@ -79,7 +88,7 @@ public class TutorCalendarActivity extends AppCompatActivity {
 
         for (int i = 0; i < fullTimes.length - 1; i++) {
             timeStarts.add(fullTimes[i]);
-            String label = fullTimes[i] + " - " + fullTimes[i + 1];
+            String label = fullTimes[i] + "\n" + fullTimes[i + 1]; // Changed to \n for vertical stacking
             timeLabels.add(label);
         }
 

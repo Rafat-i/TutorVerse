@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
+import androidx.appcompat.app.AlertDialog;
 
 import java.util.List;
 import java.util.Map;
@@ -42,28 +43,61 @@ public class WeeklyScheduleAdapter extends BaseAdapter {
         return position;
     }
 
-    private int colorFor(String day, String timeStart) {
-        String key = day + "|" + timeStart;
-        String course = slotCourseMap.get(key);
-        if (course == null) {
-            return 0xFFE0E0E0;
-        }
+    private int colorFor(String course) {
+        if (course == null) return 0xFFEEEEEE; // Lighter grey for empty
 
         String lower = course.toLowerCase();
+        if (lower.contains("android")) return 0xFF81C784;
+        else if (lower.contains("java")) return 0xFF64B5F6;
+        else if (lower.contains("web")) return 0xFFFFB74D;
+        else if (lower.contains("data")) return 0xFFBA68C8;
+        else if (lower.contains("oop")) return 0xFF4DB6AC;
+        else return 0xFFA1887F;
+    }
 
-        if (lower.contains("android")) {
-            return 0xFF81C784;
-        } else if (lower.contains("java")) {
-            return 0xFF64B5F6;
-        } else if (lower.contains("web")) {
-            return 0xFFFFB74D;
-        } else if (lower.contains("data")) {
-            return 0xFFBA68C8;
-        } else if (lower.contains("oop")) {
-            return 0xFF4DB6AC;
+    // Helper to generate 3-4 letter codes
+    private String getCourseCode(String course) {
+        if (course == null) return "";
+        String lower = course.toLowerCase();
+        if (lower.contains("android")) return "AND";
+        if (lower.contains("java")) return "JAVA";
+        if (lower.contains("web")) return "WEB";
+        if (lower.contains("data")) return "DSA";
+        if (lower.contains("oop")) return "OOP";
+        // Fallback: first 3 letters uppercase
+        if (course.length() >= 3) return course.substring(0, 3).toUpperCase();
+        return course.toUpperCase();
+    }
+
+    private void setupCell(TextView cell, String day, String startTime, String label) {
+        String key = day + "|" + startTime;
+        String course = slotCourseMap.get(key);
+
+        cell.setBackgroundColor(colorFor(course));
+
+        // Set the abbreviation code inside the cell
+        if (course != null) {
+            cell.setText(getCourseCode(course));
         } else {
-            return 0xFFA1887F;
+            cell.setText("");
         }
+
+        cell.setOnClickListener(v -> {
+            if (course != null) {
+                showClassDialog(day, label, course);
+            }
+        });
+    }
+
+    private void showClassDialog(String day, String timeLabel, String courseName) {
+        // Replace the newline with a cleaner dash format
+        String cleanTime = timeLabel.replace("\n", " - ");
+
+        new AlertDialog.Builder(context)
+                .setTitle(courseName)
+                .setMessage("Day: " + day + "\nTime: " + cleanTime + "\nStatus: Scheduled")
+                .setPositiveButton("Close", null)
+                .show();
     }
 
     @Override
@@ -85,17 +119,11 @@ public class WeeklyScheduleAdapter extends BaseAdapter {
 
         tvTime.setText(label);
 
-        cellMon.setBackgroundColor(colorFor("Monday", startTime));
-        cellTue.setBackgroundColor(colorFor("Tuesday", startTime));
-        cellWed.setBackgroundColor(colorFor("Wednesday", startTime));
-        cellThu.setBackgroundColor(colorFor("Thursday", startTime));
-        cellFri.setBackgroundColor(colorFor("Friday", startTime));
-
-        cellMon.setText("");
-        cellTue.setText("");
-        cellWed.setText("");
-        cellThu.setText("");
-        cellFri.setText("");
+        setupCell(cellMon, "Monday", startTime, label);
+        setupCell(cellTue, "Tuesday", startTime, label);
+        setupCell(cellWed, "Wednesday", startTime, label);
+        setupCell(cellThu, "Thursday", startTime, label);
+        setupCell(cellFri, "Friday", startTime, label);
 
         return convertView;
     }

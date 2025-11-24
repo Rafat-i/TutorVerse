@@ -2,6 +2,7 @@ package com.example.tutorverse;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.TypedValue;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
@@ -36,9 +37,17 @@ public class RegisterActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_register);
 
+        int paddingPx = (int) TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP, 24, getResources().getDisplayMetrics());
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            v.setPadding(
+                    systemBars.left + paddingPx,
+                    systemBars.top + paddingPx,
+                    systemBars.right + paddingPx,
+                    systemBars.bottom + paddingPx
+            );
             return insets;
         });
 
@@ -46,8 +55,6 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void initialize() {
-
-
         edUsername = findViewById(R.id.edUsername);
         edEmail = findViewById(R.id.edEmail);
         edPassword = findViewById(R.id.edPassword);
@@ -55,10 +62,8 @@ public class RegisterActivity extends AppCompatActivity {
         btnRegister = findViewById(R.id.btnRegister);
         tvLoginLink = findViewById(R.id.tvLoginLink);
 
-
         auth = FirebaseAuth.getInstance();
         db = FirebaseDatabase.getInstance().getReference("users");
-
 
         btnRegister.setOnClickListener(v -> registerUser());
 
@@ -88,7 +93,6 @@ public class RegisterActivity extends AppCompatActivity {
                     String uid = result.getUser().getUid();
 
                     User user = new User(uid, username, email, role);
-
 
                     db.child(uid).setValue(user)
                             .addOnSuccessListener(unused -> {

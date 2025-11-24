@@ -1,58 +1,40 @@
 package models;
 
-import androidx.annotation.NonNull;
-
 public class ScheduleMeeting {
+    String tutorName;
+    String subject;
+    String time;
+    boolean isBooked;
 
-    private String tutorName;
-    private String subject;
-    private String time;
-    private boolean booked;
+    // Hidden metadata for logic
+    String tutorUid;
+    String day;
+    String startTime;
+    String takenBy;
 
-    public ScheduleMeeting() { }
-
-    public ScheduleMeeting(String tutorName, String subject, String time, boolean booked) {
+    public ScheduleMeeting(String tutorName, String subject, String time, boolean isBooked) {
         this.tutorName = tutorName;
         this.subject = subject;
         this.time = time;
-        this.booked = booked;
+        this.isBooked = isBooked;
     }
 
-    public String getTutorName() {
-        return tutorName;
-    }
+    // Getters and Setters
+    public String getTutorName() { return tutorName; }
+    public String getSubject() { return subject; }
+    public String getTime() { return time; }
+    public boolean isBooked() { return isBooked; }
+    public void setBooked(boolean booked) { isBooked = booked; }
 
-    public void setTutorName(String tutorName) {
-        this.tutorName = tutorName;
-    }
+    public String getTutorUid() { return tutorUid; }
+    public void setTutorUid(String tutorUid) { this.tutorUid = tutorUid; }
 
-    public String getSubject() {
-        return subject;
-    }
+    public String getDay() { return day; }
+    public void setDay(String day) { this.day = day; }
 
-    public void setSubject(String subject) {
-        this.subject = subject;
-    }
+    public String getStartTime() { return startTime; }
+    public void setStartTime(String startTime) { this.startTime = startTime; }
 
-    public String getTime() {
-        return time;
-    }
-
-    public void setTime(String time) {
-        this.time = time;
-    }
-
-    public boolean isBooked() {
-        return booked;
-    }
-
-    public void setBooked(boolean booked) {
-        this.booked = booked;
-    }
-
-    @NonNull
-    @Override
-    public String toString() {
-        return tutorName + " - " + subject + " (" + time + ")";
-    }
+    public String getTakenBy() { return takenBy; }
+    public void setTakenBy(String takenBy) { this.takenBy = takenBy; }
 }
