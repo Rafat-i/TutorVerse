@@ -1,5 +1,6 @@
 package com.example.tutorverse;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.TypedValue;
 import android.widget.Button;
@@ -19,17 +20,37 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 public class StudentBookingsActivity extends AppCompatActivity {
 
     ListView lvMyBookings;
     Button btnBack;
 
-    // Changed to use the custom BookingItem class
     ArrayList<BookingPillAdapter.BookingItem> myBookingsList;
     BookingPillAdapter adapter;
 
     String myUid;
+
+    private static class RawBooking {
+        String tutorUid;
+        String tutorName;
+        String course;
+        String day;
+        int startHour;
+        String bookingKey;
+
+        public RawBooking(String tutorUid, String tutorName, String course, String day, int startHour, String bookingKey) {
+            this.tutorUid = tutorUid;
+            this.tutorName = tutorName;
+            this.course = course;
+            this.day = day;
+            this.startHour = startHour;
+            this.bookingKey = bookingKey;
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,9 +92,13 @@ public class StudentBookingsActivity extends AppCompatActivity {
         lvMyBookings.setAdapter(adapter);
 
         lvMyBookings.setOnItemClickListener((parent, view, position, id) -> {
-            showCancelDialog(position);
+            showActionDialog(position);
         });
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
         loadMyBookings();
     }
 
@@ -82,7 +107,7 @@ public class StudentBookingsActivity extends AppCompatActivity {
         DatabaseReference dbUsers = FirebaseDatabase.getInstance().getReference("users");
 
         dbBookings.get().addOnSuccessListener(snapshot -> {
-            myBookingsList.clear();
+            List<RawBooking> rawList = new ArrayList<>();
 
             for (DataSnapshot tutorSnap : snapshot.getChildren()) {
                 String tutorUid = tutorSnap.getKey();
@@ -92,48 +117,129 @@ public class StudentBookingsActivity extends AppCompatActivity {
 
                     if (studentUid != null && studentUid.equals(myUid)) {
                         String course = bookingSnap.child("course").getValue(String.class);
-                        String time = bookingSnap.child("time").getValue(String.class);
+                        String fullTime = bookingSnap.child("time").getValue(String.class); // "Monday 08:00"
                         String bookingKey = bookingSnap.getKey();
 
-                        // We need the tutor's name. Fetch it!
-                        if (tutorUid != null) {
-                            dbUsers.child(tutorUid).child("username").get().addOnSuccessListener(nameSnap -> {
-                                String tutorName = nameSnap.getValue(String.class);
-                                if (tutorName == null) tutorName = "Unknown Tutor";
+                        if (fullTime != null) {
+                            String[] parts = fullTime.split(" ");
+                            if (parts.length >= 2) {
+                                String day = parts[0];
+                                int hour = Integer.parseInt(parts[1].split(":")[0]);
 
-                                // Add to list and refresh
-                                myBookingsList.add(new BookingPillAdapter.BookingItem(
-                                        tutorName, tutorUid, bookingKey, course, time
-                                ));
-                                adapter.notifyDataSetChanged();
-                            });
+                                rawList.add(new RawBooking(tutorUid, "Unknown", course, day, hour, bookingKey));
+                            }
                         }
                     }
                 }
             }
+
+            // 2. Fetch Tutor Names & Process
+            fetchNamesAndGroup(rawList, dbUsers);
         });
     }
 
-    private void showCancelDialog(int position) {
+    private void fetchNamesAndGroup(List<RawBooking> rawList, DatabaseReference dbUsers) {
+        dbUsers.get().addOnSuccessListener(userSnap -> {
+            for (RawBooking b : rawList) {
+                String name = userSnap.child(b.tutorUid).child("username").getValue(String.class);
+                if (name != null) b.tutorName = name;
+            }
+
+            myBookingsList.clear();
+
+            Collections.sort(rawList, (o1, o2) -> {
+                int dayComp = o1.day.compareTo(o2.day);
+                if (dayComp != 0) return dayComp;
+                return Integer.compare(o1.startHour, o2.startHour);
+            });
+
+            if (rawList.isEmpty()) {
+                adapter.notifyDataSetChanged();
+                return;
+            }
+
+            RawBooking currentBlock = rawList.get(0);
+            int endHour = currentBlock.startHour + 1;
+            String combinedKeys = currentBlock.bookingKey;
+
+            for (int i = 1; i < rawList.size(); i++) {
+                RawBooking next = rawList.get(i);
+
+                if (next.tutorUid.equals(currentBlock.tutorUid) &&
+                        next.course.equals(currentBlock.course) &&
+                        next.day.equals(currentBlock.day) &&
+                        next.startHour == endHour) {
+
+                    endHour++;
+                    combinedKeys += "," + next.bookingKey;
+                } else {
+                    addMergedItem(currentBlock, endHour, combinedKeys);
+
+                    currentBlock = next;
+                    endHour = next.startHour + 1;
+                    combinedKeys = next.bookingKey;
+                }
+            }
+            // Commit final block
+            addMergedItem(currentBlock, endHour, combinedKeys);
+
+            adapter.notifyDataSetChanged();
+        });
+    }
+
+    private void addMergedItem(RawBooking start, int endHour, String allKeys) {
+        String timeStr = String.format("%s %02d:00 - %02d:00", start.day, start.startHour, endHour);
+
+        myBookingsList.add(new BookingPillAdapter.BookingItem(
+                start.tutorName,
+                start.tutorUid,
+                allKeys,
+                start.course,
+                timeStr
+        ));
+    }
+
+    private void showActionDialog(int position) {
         if (myBookingsList.isEmpty() || position >= myBookingsList.size()) return;
 
+        BookingPillAdapter.BookingItem item = myBookingsList.get(position);
+
+        String[] options = {"Chat with Tutor", "Complete Session & Review", "Cancel Booking"};
+
         new AlertDialog.Builder(this)
-                .setTitle("Cancel Booking?")
-                .setMessage("Are you sure you want to cancel this session?")
-                .setPositiveButton("Yes", (dialog, which) -> {
+                .setTitle("Manage Booking")
+                .setItems(options, (dialog, which) -> {
+                    if (which == 0) {
+                        Intent i = new Intent(StudentBookingsActivity.this, ChatActivity.class);
+                        i.putExtra("otherUid", item.tutorUid);
+                        i.putExtra("otherName", item.tutorName);
+                        startActivity(i);
+                    } else if (which == 1) {
+                        Intent i = new Intent(StudentBookingsActivity.this, ReviewActivity.class);
+                        i.putExtra("tutorUid", item.tutorUid);
+                        i.putExtra("tutorName", item.tutorName);
 
-                    BookingPillAdapter.BookingItem item = myBookingsList.get(position);
+                        String firstKey = item.bookingKey.split(",")[0];
+                        i.putExtra("bookingKey", firstKey);
 
-                    FirebaseDatabase.getInstance().getReference("bookings")
-                            .child(item.tutorUid).child(item.bookingKey).removeValue()
-                            .addOnSuccessListener(v -> {
-                                Toast.makeText(this, "Booking Cancelled", Toast.LENGTH_SHORT).show();
-                                // Remove from local list to update UI instantly
-                                myBookingsList.remove(position);
-                                adapter.notifyDataSetChanged();
-                            });
+                        deleteMultiBooking(item.tutorUid, item.bookingKey);
+
+                        startActivity(i);
+                    } else {
+                        deleteMultiBooking(item.tutorUid, item.bookingKey);
+                        Toast.makeText(this, "Booking Cancelled", Toast.LENGTH_SHORT).show();
+                        myBookingsList.remove(position);
+                        adapter.notifyDataSetChanged();
+                    }
                 })
-                .setNegativeButton("No", null)
                 .show();
+    }
+
+    private void deleteMultiBooking(String tutorUid, String commaSeparatedKeys) {
+        String[] keys = commaSeparatedKeys.split(",");
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("bookings").child(tutorUid);
+        for (String key : keys) {
+            ref.child(key).removeValue();
+        }
     }
 }

@@ -12,6 +12,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TutorVerse">
         <activity android:name=".StudentBookingsActivity" android:exported="false" />
+        <activity android:name=".ReviewActivity" android:exported="false" />
+        <activity android:name=".ChatActivity" android:exported="false" />
+        <activity android:name=".InboxActivity" android:exported="false" />
+        <activity android:name=".TutorProfileActivity" android:exported="false" />
         <activity
             android:name=".StudentDashboardActivity"
             android:exported="false" />

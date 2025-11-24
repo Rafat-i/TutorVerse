@@ -21,6 +21,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 import models.ScheduleMeeting;
 
@@ -37,6 +40,7 @@ public class ScheduleActivity extends AppCompatActivity {
 
     DatabaseReference dbAvailability;
     DatabaseReference dbBookings;
+    DatabaseReference dbReviews;
     FirebaseAuth auth;
 
     String selectedCourse = "";
@@ -72,7 +76,6 @@ public class ScheduleActivity extends AppCompatActivity {
         layoutDayContent = findViewById(R.id.layoutDayContent);
         layoutTutorContent = findViewById(R.id.layoutTutorContent);
 
-        // Toggle Sections
         tvDaySectionHeader.setOnClickListener(v -> {
             if (layoutDayContent.getVisibility() == View.VISIBLE) {
                 layoutDayContent.setVisibility(View.GONE);
@@ -99,6 +102,7 @@ public class ScheduleActivity extends AppCompatActivity {
 
         dbAvailability = FirebaseDatabase.getInstance().getReference("availability");
         dbBookings = FirebaseDatabase.getInstance().getReference("bookings");
+        dbReviews = FirebaseDatabase.getInstance().getReference("reviews");
 
         gridAdapter = new ScheduleGridAdapter(this);
         gridDays.setAdapter(gridAdapter);
@@ -108,7 +112,6 @@ public class ScheduleActivity extends AppCompatActivity {
         lvSchedule.setAdapter(meetingAdapter);
 
         gridDays.setOnItemClickListener((parent, view, position, id) -> {
-            // Highlighting Logic
             gridAdapter.setSelectedPosition(position);
             String dayName = gridAdapter.getFullDay(position);
             tvSelectedDay.setText("Day: " + dayName);
@@ -120,60 +123,73 @@ public class ScheduleActivity extends AppCompatActivity {
         meetingList.clear();
         meetingAdapter.notifyDataSetChanged();
 
-        // 1. Get all availability
         dbAvailability.get().addOnSuccessListener(availSnapshot -> {
-
-            // 2. Get all existing bookings to check conflicts
             dbBookings.get().addOnSuccessListener(bookingSnapshot -> {
+                dbReviews.get().addOnSuccessListener(reviewSnapshot -> {
 
-                for (DataSnapshot tutorSnap : availSnapshot.getChildren()) {
-                    String tutorUID = tutorSnap.getKey();
-                    String tutorName = tutorSnap.child("tutorName").getValue(String.class);
-                    if (tutorName == null) tutorName = "Unknown Tutor";
-
-                    // Drill down: courses -> CourseName -> DayName
-                    if (!tutorSnap.child("courses").child(course).child(dayName).exists()) continue;
-
-                    DataSnapshot slotsSnap = tutorSnap.child("courses").child(course).child(dayName);
-
-                    // Iterate through every time slot (e.g., "08:00")
-                    for (DataSnapshot timeSnap : slotsSnap.getChildren()) {
-                        String startTime = timeSnap.getKey(); // "08:00"
-                        if (startTime == null) continue;
-
-                        // Check if this slot is already booked in /bookings/{tutorUID}/{day|time}
-                        String bookingKey = dayName + "|" + startTime;
-                        boolean isTaken = false;
-                        String takenBy = "";
-
-                        if (bookingSnapshot.child(tutorUID).hasChild(bookingKey)) {
-                            isTaken = true;
-                            takenBy = bookingSnapshot.child(tutorUID).child(bookingKey).child("studentName").getValue(String.class);
+                    for (DataSnapshot tutorSnap : availSnapshot.getChildren()) {
+                        String tutorUID = tutorSnap.getKey();
+                        String tutorName = tutorSnap.child("tutorName").getValue(String.class);
+                        if (tutorName == null) tutorName = "Unknown Tutor";
+                        double rating = 0.0;
+                        if (reviewSnapshot.hasChild(tutorUID)) {
+                            double total = 0;
+                            int count = 0;
+                            for (DataSnapshot r : reviewSnapshot.child(tutorUID).getChildren()) {
+                                Double val = r.child("rating").getValue(Double.class);
+                                if (val != null) {
+                                    total += val;
+                                    count++;
+                                }
+                            }
+                            if (count > 0) rating = total / count;
                         }
 
-                        // Create meeting object
-                        ScheduleMeeting meeting = new ScheduleMeeting(
-                                tutorName,
-                                course,
-                                dayName + " " + startTime, // Display String
-                                isTaken
-                        );
+                        if (!tutorSnap.child("courses").child(course).child(dayName).exists()) continue;
 
-                        // Store hidden metadata for booking logic
-                        meeting.setTutorUid(tutorUID);
-                        meeting.setDay(dayName);
-                        meeting.setStartTime(startTime);
-                        meeting.setTakenBy(takenBy); // To check if "I" booked it
+                        for (DataSnapshot timeSnap : tutorSnap.child("courses").child(course).child(dayName).getChildren()) {
+                            String startTime = timeSnap.getKey(); // "08:00"
+                            if (startTime == null) continue;
 
-                        meetingList.add(meeting);
+                            // Check Booking
+                            String bookingKey = dayName + "|" + startTime;
+                            boolean isTaken = false;
+                            String takenBy = "";
+
+                            if (bookingSnapshot.child(tutorUID).hasChild(bookingKey)) {
+                                isTaken = true;
+                                takenBy = bookingSnapshot.child(tutorUID).child(bookingKey).child("studentName").getValue(String.class);
+                            }
+
+                            ScheduleMeeting meeting = new ScheduleMeeting(
+                                    tutorName,
+                                    course,
+                                    dayName + " " + startTime,
+                                    isTaken
+                            );
+                            meeting.setTutorUid(tutorUID);
+                            meeting.setDay(dayName);
+                            meeting.setStartTime(startTime);
+                            meeting.setTakenBy(takenBy);
+                            meeting.rating = rating;
+                            meeting.durationHours = 1;
+
+                            meetingList.add(meeting);
+                        }
                     }
-                }
 
-                if (meetingList.isEmpty()) {
-                    Toast.makeText(this, "No tutors available for " + dayName, Toast.LENGTH_SHORT).show();
-                }
+                    Collections.sort(meetingList, new Comparator<ScheduleMeeting>() {
+                        @Override
+                        public int compare(ScheduleMeeting o1, ScheduleMeeting o2) {
+                            return o1.getStartTime().compareTo(o2.getStartTime());
+                        }
+                    });
 
-                meetingAdapter.notifyDataSetChanged();
+                    if (meetingList.isEmpty()) {
+                        Toast.makeText(this, "No tutors available.", Toast.LENGTH_SHORT).show();
+                    }
+                    meetingAdapter.notifyDataSetChanged();
+                });
             });
         });
     }

@@ -16,31 +16,55 @@
 
         <TextView
             android:id="@+id/tvTitle"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:text="Tutor Dashboard"
             android:textSize="28sp"
             android:textStyle="bold"
             android:textColor="#1A3D7C" />
 
-        <View
-            android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:layout_weight="1" />
-
-        <Button
-            android:id="@+id/btnBack"
+        <FrameLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Sign Out"
-            android:textColor="#FFFFFF"
-            android:textStyle="bold"
-            android:backgroundTint="#1A3D7C"
-            android:paddingLeft="20dp"
-            android:paddingRight="20dp"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp" />
+            android:layout_height="wrap_content">
+
+            <Button
+                android:id="@+id/btnInbox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Messages"
+                android:textSize="12sp"
+                android:textColor="#FFFFFF"
+                android:backgroundTint="#1A3D7C"
+                android:minHeight="40dp"
+                android:paddingHorizontal="12dp" />
+
+            <TextView
+                android:id="@+id/tvUnreadBadge"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:background="@drawable/bg_badge"
+                android:text="1"
+                android:textColor="#FFFFFF"
+                android:textSize="10sp"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:layout_gravity="end|top"
+                android:visibility="gone"
+                android:elevation="4dp"/>
+        </FrameLayout>
     </LinearLayout>
+
+    <Button
+        android:id="@+id/btnEditProfile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Edit Profile &amp; Bio"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold"
+        android:backgroundTint="#1A3D7C"
+        android:padding="20dp"
+        android:layout_marginBottom="16dp" />
 
     <Button
         android:id="@+id/btnSetAvailability"
@@ -61,6 +85,17 @@
         android:textColor="#FFFFFF"
         android:textStyle="bold"
         android:backgroundTint="#1A3D7C"
-        android:padding="20dp" />
+        android:padding="20dp"
+        android:layout_marginBottom="16dp" />
+
+    <Button
+        android:id="@+id/btnBack"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Logout"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold"
+        android:backgroundTint="#D32F2F"
+        android:padding="12dp" />
 
 </LinearLayout>

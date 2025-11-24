@@ -13,14 +13,32 @@
         android:layout_weight="1"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/tvTutorName"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Tutor Name"
-            android:textStyle="bold"
-            android:textColor="#1A3D7C"
-            android:textSize="16sp" />
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/tvTutorName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tutor Name"
+                android:textStyle="bold"
+                android:textColor="#1A3D7C"
+                android:textSize="16sp"
+                android:layout_marginEnd="8dp"/>
+
+            <TextView
+                android:id="@+id/tvRating"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="★ 4.5"
+                android:textColor="#FFB74D"
+                android:textStyle="bold"
+                android:textSize="14sp"
+                android:visibility="gone"/>
+        </LinearLayout>
 
         <TextView
             android:id="@+id/tvSubject"

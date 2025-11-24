@@ -9,6 +9,15 @@
     android:background="#F7F8FA"
     tools:context=".RegisterActivity">
 
+    <ImageView
+        android:id="@+id/ivLogo"
+        android:layout_width="300dp"
+        android:layout_height="200dp"
+        android:src="@drawable/logo"
+        android:layout_marginBottom="24dp"
+        android:scaleType="fitCenter"
+        android:adjustViewBounds="true" />
+
     <TextView
         android:text="Create Account"
         android:textSize="28sp"
@@ -46,15 +55,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp" />
-
-    <TextView
-        android:text="Select Role"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        android:textColor="#1A3D7C"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp" />
 
     <RadioGroup
         android:id="@+id/roleGroup"

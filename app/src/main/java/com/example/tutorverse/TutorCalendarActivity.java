@@ -30,14 +30,15 @@ public class TutorCalendarActivity extends AppCompatActivity {
     Button btnBackCalendar;
 
     FirebaseAuth auth;
-    DatabaseReference dbAvailabilityCourses;
+    DatabaseReference dbAvailability;
+    DatabaseReference dbBookings;
 
     List<String> timeStarts;
     List<String> timeLabels;
-    Map<String, String> slotCourseMap;
+
+    Map<String, WeeklyScheduleAdapter.SlotInfo> slotMap;
 
     WeeklyScheduleAdapter adapter;
-
     String tutorUid;
 
     @Override
@@ -72,10 +73,8 @@ public class TutorCalendarActivity extends AppCompatActivity {
         }
         tutorUid = auth.getCurrentUser().getUid();
 
-        dbAvailabilityCourses = FirebaseDatabase.getInstance()
-                .getReference("availability")
-                .child(tutorUid)
-                .child("courses");
+        dbAvailability = FirebaseDatabase.getInstance().getReference("availability").child(tutorUid).child("courses");
+        dbBookings = FirebaseDatabase.getInstance().getReference("bookings").child(tutorUid);
 
         String[] fullTimes = {
                 "08:00", "09:00", "10:00", "11:00",
@@ -88,54 +87,67 @@ public class TutorCalendarActivity extends AppCompatActivity {
 
         for (int i = 0; i < fullTimes.length - 1; i++) {
             timeStarts.add(fullTimes[i]);
-            String label = fullTimes[i] + "\n" + fullTimes[i + 1]; // Changed to \n for vertical stacking
-            timeLabels.add(label);
+            timeLabels.add(fullTimes[i] + "\n" + fullTimes[i + 1]);
         }
 
-        slotCourseMap = new HashMap<>();
+        slotMap = new HashMap<>();
 
-        adapter = new WeeklyScheduleAdapter(this, timeStarts, timeLabels, slotCourseMap);
+        adapter = new WeeklyScheduleAdapter(this, timeStarts, timeLabels, slotMap);
         lvWeekly.setAdapter(adapter);
 
-        loadAvailability();
+        loadData();
     }
 
-    private void loadAvailability() {
-        dbAvailabilityCourses.addListenerForSingleValueEvent(new ValueEventListener() {
+    private void loadData() {
+        // 1. Load Availability first
+        dbAvailability.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                slotCourseMap.clear();
+            public void onDataChange(DataSnapshot availSnap) {
+                slotMap.clear();
 
-                if (!snapshot.exists()) {
-                    adapter.notifyDataSetChanged();
-                    return;
-                }
-
-                for (DataSnapshot courseSnap : snapshot.getChildren()) {
+                // Fill map with "Available" slots
+                for (DataSnapshot courseSnap : availSnap.getChildren()) {
                     String courseName = courseSnap.getKey();
-                    if (courseName == null) continue;
-
                     for (DataSnapshot daySnap : courseSnap.getChildren()) {
-                        String dayName = daySnap.getKey();
-                        if (dayName == null) continue;
-
+                        String day = daySnap.getKey();
                         for (DataSnapshot slotSnap : daySnap.getChildren()) {
-                            String timeKey = slotSnap.getKey();
-                            if (timeKey == null) continue;
+                            String time = slotSnap.getKey();
+                            String key = day + "|" + time;
 
-                            String mapKey = dayName + "|" + timeKey;
-                            slotCourseMap.put(mapKey, courseName);
+                            // Create SlotInfo (Initially no student)
+                            slotMap.put(key, new WeeklyScheduleAdapter.SlotInfo(courseName, null, null, null));
                         }
                     }
                 }
 
-                adapter.notifyDataSetChanged();
+                // 2. Load Bookings to overlay student info
+                dbBookings.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot bookingSnap) {
+                        for (DataSnapshot slotBooking : bookingSnap.getChildren()) {
+                            String key = slotBooking.getKey();
+
+                            if (slotMap.containsKey(key)) {
+                                String studentName = slotBooking.child("studentName").getValue(String.class);
+                                String studentUid = slotBooking.child("studentUid").getValue(String.class);
+                                String bookingId = slotBooking.getKey(); // simplistic booking key
+
+                                WeeklyScheduleAdapter.SlotInfo info = slotMap.get(key);
+                                info.studentName = studentName;
+                                info.studentUid = studentUid;
+                            }
+                        }
+                        adapter.notifyDataSetChanged();
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError error) {}
+                });
             }
 
             @Override
             public void onCancelled(DatabaseError error) {
-                Toast.makeText(TutorCalendarActivity.this,
-                        "Error loading availability", Toast.LENGTH_SHORT).show();
+                Toast.makeText(TutorCalendarActivity.this, "Error loading data", Toast.LENGTH_SHORT).show();
             }
         });
     }

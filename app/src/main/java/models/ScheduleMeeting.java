@@ -6,7 +6,9 @@ public class ScheduleMeeting {
     String time;
     boolean isBooked;
 
-    // Hidden metadata for logic
+    public int durationHours = 1;
+    public double rating = 0.0;
+
     String tutorUid;
     String day;
     String startTime;
@@ -19,7 +21,6 @@ public class ScheduleMeeting {
         this.isBooked = isBooked;
     }
 
-    // Getters and Setters
     public String getTutorName() { return tutorName; }
     public String getSubject() { return subject; }
     public String getTime() { return time; }

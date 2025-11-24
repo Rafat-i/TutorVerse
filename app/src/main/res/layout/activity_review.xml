@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:gravity="center_horizontal"
+    android:background="#F7F8FA">
+
+    <TextView
+        android:id="@+id/tvReviewTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Rate Your Session"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:textColor="#1A3D7C"
+        android:layout_marginBottom="8dp" />
+
+    <TextView
+        android:id="@+id/tvTutorName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Tutor: Jeff"
+        android:textSize="18sp"
+        android:textColor="#555555"
+        android:layout_marginBottom="32dp" />
+
+    <RatingBar
+        android:id="@+id/ratingBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:numStars="5"
+        android:stepSize="1.0"
+        android:rating="5.0"
+        android:progressTint="#FFB74D"
+        android:layout_marginBottom="24dp" />
+
+    <EditText
+        android:id="@+id/edComment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="How was the session?"
+        android:padding="16dp"
+        android:background="@android:drawable/edit_text"
+        android:minLines="3"
+        android:gravity="top|start"
+        android:layout_marginBottom="32dp" />
+
+    <Button
+        android:id="@+id/btnSubmitReview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Submit Review"
+        android:textStyle="bold"
+        android:textColor="#FFFFFF"
+        android:backgroundTint="#1A3D7C"
+        android:padding="12dp" />
+
+</LinearLayout>

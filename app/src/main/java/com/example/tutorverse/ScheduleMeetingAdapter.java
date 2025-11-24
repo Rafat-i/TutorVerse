@@ -1,7 +1,7 @@
 package com.example.tutorverse;
 
 import android.content.Context;
-import android.graphics.Color;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,7 +26,7 @@ import models.ScheduleMeeting;
 public class ScheduleMeetingAdapter extends ArrayAdapter<ScheduleMeeting> {
 
     String currentStudentUid;
-    String currentStudentName = "Student"; // Placeholder until we fetch profile
+    String currentStudentName = "Student";
 
     public ScheduleMeetingAdapter(@NonNull Context context, @NonNull ArrayList<ScheduleMeeting> items) {
         super(context, 0, items);
@@ -56,33 +56,45 @@ public class ScheduleMeetingAdapter extends ArrayAdapter<ScheduleMeeting> {
         ScheduleMeeting meeting = getItem(position);
 
         TextView tvTutorName = convertView.findViewById(R.id.tvTutorName);
+        TextView tvRating = convertView.findViewById(R.id.tvRating);
         TextView tvSubject = convertView.findViewById(R.id.tvSubject);
         TextView tvTime = convertView.findViewById(R.id.tvTime);
         Button btnBook = convertView.findViewById(R.id.btnBook);
 
         if (meeting != null) {
             tvTutorName.setText(meeting.getTutorName());
-            tvSubject.setText(meeting.getSubject());
-            tvTime.setText(meeting.getTime()); // e.g., "Monday 08:00"
+            tvTutorName.setTextColor(0xFF1A3D7C);
+            tvTutorName.setOnClickListener(v -> {
+                Intent i = new Intent(getContext(), TutorProfileActivity.class);
+                i.putExtra("tutorUid", meeting.getTutorUid());
+                i.putExtra("tutorName", meeting.getTutorName());
+                getContext().startActivity(i);
+            });
 
-            // Logic for Button State
+            if (meeting.rating > 0) {
+                tvRating.setText(String.format("★ %.1f", meeting.rating));
+                tvRating.setVisibility(View.VISIBLE);
+            } else {
+                tvRating.setVisibility(View.GONE);
+            }
+
+            tvSubject.setText(meeting.getSubject());
+            tvTime.setText(meeting.getTime());
+
             if (meeting.isBooked()) {
-                // Check if *I* booked it
                 if (currentStudentName.equals(meeting.getTakenBy())) {
                     btnBook.setText("Booked");
-                    btnBook.setBackgroundColor(0xFF4CAF50); // Green
+                    btnBook.setBackgroundColor(0xFF4CAF50);
                     btnBook.setEnabled(false);
                 } else {
-                    // Someone else booked it
                     btnBook.setText("Unavailable");
-                    btnBook.setBackgroundColor(0xFFE0E0E0); // Grey
+                    btnBook.setBackgroundColor(0xFFE0E0E0);
                     btnBook.setTextColor(0xFF888888);
                     btnBook.setEnabled(false);
                 }
             } else {
-                // Available
                 btnBook.setText("Book");
-                btnBook.setBackgroundColor(0xFF1A3D7C); // Blue
+                btnBook.setBackgroundColor(0xFF1A3D7C);
                 btnBook.setTextColor(0xFFFFFFFF);
                 btnBook.setEnabled(true);
             }
@@ -100,23 +112,25 @@ public class ScheduleMeetingAdapter extends ArrayAdapter<ScheduleMeeting> {
     private void bookSession(ScheduleMeeting meeting) {
         DatabaseReference dbBookings = FirebaseDatabase.getInstance().getReference("bookings");
 
-        String key = meeting.getDay() + "|" + meeting.getStartTime();
+        for (int i = 0; i < meeting.durationHours; i++) {
+            int startHour = Integer.parseInt(meeting.getStartTime().split(":")[0]);
+            int currentSlot = startHour + i;
+            String timeString = String.format("%02d:00", currentSlot);
 
-        Map<String, Object> bookingData = new HashMap<>();
-        bookingData.put("studentName", currentStudentName);
-        bookingData.put("studentUid", currentStudentUid);
-        bookingData.put("course", meeting.getSubject());
-        bookingData.put("time", meeting.getTime());
+            String key = meeting.getDay() + "|" + timeString;
 
-        dbBookings.child(meeting.getTutorUid()).child(key).setValue(bookingData)
-                .addOnSuccessListener(aVoid -> {
-                    Toast.makeText(getContext(), "Booking Confirmed!", Toast.LENGTH_SHORT).show();
-                    meeting.setBooked(true);
-                    meeting.setTakenBy(currentStudentName);
-                    notifyDataSetChanged();
-                })
-                .addOnFailureListener(e ->
-                        Toast.makeText(getContext(), "Failed to book.", Toast.LENGTH_SHORT).show()
-                );
+            Map<String, Object> bookingData = new HashMap<>();
+            bookingData.put("studentName", currentStudentName);
+            bookingData.put("studentUid", currentStudentUid);
+            bookingData.put("course", meeting.getSubject());
+            bookingData.put("time", meeting.getDay() + " " + timeString);
+
+            dbBookings.child(meeting.getTutorUid()).child(key).setValue(bookingData);
+        }
+
+        Toast.makeText(getContext(), "Block Booking Confirmed!", Toast.LENGTH_SHORT).show();
+        meeting.setBooked(true);
+        meeting.setTakenBy(currentStudentName);
+        notifyDataSetChanged();
     }
 }

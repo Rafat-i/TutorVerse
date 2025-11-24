@@ -1,6 +1,8 @@
 package com.example.tutorverse;
 
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,49 +15,56 @@ import java.util.Map;
 
 public class WeeklyScheduleAdapter extends BaseAdapter {
 
+    public static class SlotInfo {
+        public String course;
+        public String studentName;
+        public String studentUid;
+        public String bookingKey;
+
+        public SlotInfo(String course, String studentName, String studentUid, String bookingKey) {
+            this.course = course;
+            this.studentName = studentName;
+            this.studentUid = studentUid;
+            this.bookingKey = bookingKey;
+        }
+    }
+
     Context context;
     List<String> timeStarts;
     List<String> timeLabels;
-    Map<String, String> slotCourseMap;
+    Map<String, SlotInfo> slotMap;
 
     public WeeklyScheduleAdapter(Context context,
                                  List<String> timeStarts,
                                  List<String> timeLabels,
-                                 Map<String, String> slotCourseMap) {
+                                 Map<String, SlotInfo> slotMap) {
         this.context = context;
         this.timeStarts = timeStarts;
         this.timeLabels = timeLabels;
-        this.slotCourseMap = slotCourseMap;
+        this.slotMap = slotMap;
     }
 
     @Override
-    public int getCount() {
-        return timeStarts.size();
-    }
+    public int getCount() { return timeStarts.size(); }
 
     @Override
-    public Object getItem(int position) {
-        return timeStarts.get(position);
-    }
+    public Object getItem(int position) { return timeStarts.get(position); }
 
     @Override
-    public long getItemId(int position) {
-        return position;
-    }
+    public long getItemId(int position) { return position; }
 
-    private int colorFor(String course) {
-        if (course == null) return 0xFFEEEEEE; // Lighter grey for empty
+    private int colorFor(String course, boolean isBooked) {
+        if (course == null) return 0xFFEEEEEE;
 
         String lower = course.toLowerCase();
         if (lower.contains("android")) return 0xFF81C784;
-        else if (lower.contains("java")) return 0xFF64B5F6;
-        else if (lower.contains("web")) return 0xFFFFB74D;
-        else if (lower.contains("data")) return 0xFFBA68C8;
-        else if (lower.contains("oop")) return 0xFF4DB6AC;
-        else return 0xFFA1887F;
+        if (lower.contains("java")) return 0xFF64B5F6;
+        if (lower.contains("web")) return 0xFFFFB74D;
+        if (lower.contains("data")) return 0xFFBA68C8;
+        if (lower.contains("oop")) return 0xFF4DB6AC;
+        return 0xFFA1887F;
     }
 
-    // Helper to generate 3-4 letter codes
     private String getCourseCode(String course) {
         if (course == null) return "";
         String lower = course.toLowerCase();
@@ -64,40 +73,57 @@ public class WeeklyScheduleAdapter extends BaseAdapter {
         if (lower.contains("web")) return "WEB";
         if (lower.contains("data")) return "DSA";
         if (lower.contains("oop")) return "OOP";
-        // Fallback: first 3 letters uppercase
         if (course.length() >= 3) return course.substring(0, 3).toUpperCase();
         return course.toUpperCase();
     }
 
     private void setupCell(TextView cell, String day, String startTime, String label) {
         String key = day + "|" + startTime;
-        String course = slotCourseMap.get(key);
+        SlotInfo info = slotMap.get(key);
 
-        cell.setBackgroundColor(colorFor(course));
+        if (info != null) {
+            boolean isBooked = (info.studentUid != null);
+            cell.setBackgroundColor(colorFor(info.course, isBooked));
 
-        // Set the abbreviation code inside the cell
-        if (course != null) {
-            cell.setText(getCourseCode(course));
-        } else {
-            cell.setText("");
-        }
-
-        cell.setOnClickListener(v -> {
-            if (course != null) {
-                showClassDialog(day, label, course);
+            // If booked, show Student Name. If not, show Course Code.
+            if (isBooked) {
+                cell.setText("Booked\n" + info.studentName);
+                cell.setTextSize(9); // Smaller text for name
+                cell.setTextColor(Color.WHITE);
+            } else {
+                cell.setText(getCourseCode(info.course));
+                cell.setTextSize(11);
+                cell.setTextColor(Color.WHITE);
             }
-        });
+
+            cell.setOnClickListener(v -> showDetailsDialog(day, label, info));
+        } else {
+            cell.setBackgroundColor(0xFFEEEEEE);
+            cell.setText("");
+            cell.setOnClickListener(null);
+        }
     }
 
-    private void showClassDialog(String day, String timeLabel, String courseName) {
-        // Replace the newline with a cleaner dash format
+    private void showDetailsDialog(String day, String timeLabel, SlotInfo info) {
         String cleanTime = timeLabel.replace("\n", " - ");
+        String status = (info.studentUid != null) ? "Booked by " + info.studentName : "Available (Empty)";
 
-        new AlertDialog.Builder(context)
-                .setTitle(courseName)
-                .setMessage("Day: " + day + "\nTime: " + cleanTime + "\nStatus: Scheduled")
-                .setPositiveButton("Close", null)
-                .show();
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle(info.course);
+        builder.setMessage("Day: " + day + "\nTime: " + cleanTime + "\nStatus: " + status);
+
+        // If booked, add Chat button
+        if (info.studentUid != null) {
+            builder.setPositiveButton("Message " + info.studentName, (dialog, which) -> {
+                Intent i = new Intent(context, ChatActivity.class);
+                i.putExtra("otherUid", info.studentUid);
+                i.putExtra("otherName", info.studentName);
+                context.startActivity(i);
+            });
+        }
+
+        builder.setNegativeButton("Close", null);
+        builder.show();
     }
 
     @Override
@@ -106,8 +132,7 @@ public class WeeklyScheduleAdapter extends BaseAdapter {
         String label = timeLabels.get(position);
 
         if (convertView == null) {
-            convertView = LayoutInflater.from(context)
-                    .inflate(R.layout.row_week_slot, parent, false);
+            convertView = LayoutInflater.from(context).inflate(R.layout.row_week_slot, parent, false);
         }
 
         TextView tvTime = convertView.findViewById(R.id.tvTime);

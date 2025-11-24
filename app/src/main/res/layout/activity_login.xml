@@ -9,6 +9,15 @@
     android:background="#F7F8FA"
     tools:context=".LoginActivity">
 
+    <ImageView
+        android:id="@+id/ivLogo"
+        android:layout_width="300dp"
+        android:layout_height="200dp"
+        android:src="@drawable/logo"
+        android:layout_marginBottom="24dp"
+        android:scaleType="fitCenter"
+        android:adjustViewBounds="true" />
+
     <TextView
         android:text="Login"
         android:textSize="28sp"
