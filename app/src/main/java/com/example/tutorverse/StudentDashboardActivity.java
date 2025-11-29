@@ -3,7 +3,6 @@ package com.example.tutorverse;
 import androidx.appcompat.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -11,6 +10,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -26,9 +26,11 @@ import java.util.List;
 public class StudentDashboardActivity extends AppCompatActivity {
 
     LinearLayout btnDashboard, btnInbox, btnEditProfile;
-    Button btnBack;
+
     TextView tvUnreadBadge; // New
     ListView lvMyBookings;
+
+    FloatingActionButton btnAdd;
 
     ArrayList<BookingPillAdapter.BookingItem> myBookingList;
     BookingPillAdapter adapter;
@@ -67,12 +69,17 @@ public class StudentDashboardActivity extends AppCompatActivity {
 
         btnDashboard = findViewById(R.id.btnDashBoard);
         btnEditProfile = findViewById(R.id.btnEditProfile);
-        btnBack = findViewById(R.id.btnBack);
+
         btnInbox = findViewById(R.id.btnInbox);
         tvUnreadBadge = findViewById(R.id.tvUnreadBadge); // Init Badge
 
         lvMyBookings = findViewById(R.id.lvMyBookings);
 
+        btnAdd = findViewById(R.id.btnAddBooking);
+
+        btnAdd.setOnClickListener(v -> {
+            startActivity(new Intent(this, CourseSelectionActivity.class));
+        });
 
         myBookingList = new ArrayList<>();
         adapter = new BookingPillAdapter(this, myBookingList);
@@ -94,7 +101,7 @@ public class StudentDashboardActivity extends AppCompatActivity {
         btnInbox.setOnClickListener(v ->
                 startActivity(new Intent(this, InboxActivity.class)));
 
-        btnBack.setOnClickListener(v -> finish());
+
 
 
         setupBadgeListener();

@@ -4,10 +4,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.TypedValue;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -20,40 +23,31 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 import java.util.Collections;
 
 public class InboxActivity extends AppCompatActivity {
 
     ListView lvInbox;
-    Button btnBack;
+
     ArrayList<InboxAdapter.InboxItem> inboxList;
     InboxAdapter adapter;
     String myUid;
 
+    LinearLayout btnDashboard, btnInbox, btnEditProfile;
+    TextView tvUnreadBadge;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_inbox);
 
-        int paddingPx = (int) TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_DIP, 24, getResources().getDisplayMetrics());
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(android.R.id.content), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(
-                    systemBars.left + paddingPx,
-                    systemBars.top + paddingPx,
-                    systemBars.right + paddingPx,
-                    systemBars.bottom + paddingPx
-            );
-            return insets;
-        });
+
 
         lvInbox = findViewById(R.id.lvInbox);
-        btnBack = findViewById(R.id.btnBack);
-        btnBack.setOnClickListener(v -> finish());
+
 
         if (FirebaseAuth.getInstance().getCurrentUser() == null) {
             finish();
@@ -74,7 +68,54 @@ public class InboxActivity extends AppCompatActivity {
         });
 
         loadInbox();
+
+        setupNavbar();
+        setupUnreadBadge();
     }
+
+    private void setupNavbar() {
+        btnDashboard = findViewById(R.id.btnDashBoard);
+        btnInbox = findViewById(R.id.btnInbox);
+        btnEditProfile = findViewById(R.id.btnEditProfile);
+        tvUnreadBadge = findViewById(R.id.tvUnreadBadge);
+
+        btnDashboard.setOnClickListener(v -> startActivity(new Intent(this, StudentDashboardActivity.class)));
+
+        btnInbox.setOnClickListener(v -> Toast.makeText(this, "Already in Messages", Toast.LENGTH_SHORT).show());
+
+        btnEditProfile.setOnClickListener(v -> startActivity(new Intent(this, ProfileActivity.class)));
+    }
+
+    private void setupUnreadBadge() {
+        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        DatabaseReference dbChats = FirebaseDatabase.getInstance().getReference("user-chats").child(uid);
+
+        dbChats.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                int unread = 0;
+                 for (DataSnapshot chat : snapshot.getChildren()) {
+                     Integer count = chat.child("unreadCount").getValue(Integer.class);
+                     if (count != null)
+                         unread += count;
+                 }
+
+                 if (unread > 0) {
+                     tvUnreadBadge.setText(String.valueOf(unread));
+                     tvUnreadBadge.setVisibility(TextView.VISIBLE);
+                 } else {
+                     tvUnreadBadge.setVisibility(TextView.GONE);
+                 }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+
 
     private void loadInbox() {
         DatabaseReference dbUserChats = FirebaseDatabase.getInstance().getReference("user-chats").child(myUid);

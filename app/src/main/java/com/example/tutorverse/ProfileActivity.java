@@ -5,18 +5,23 @@ import android.os.Bundle;
 import android.util.TypedValue;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,16 +30,19 @@ public class ProfileActivity extends AppCompatActivity {
 
     TextView tvUsername, tvEmail, tvRole;
     EditText edNewUsername, edBio;
-    Button btnUpdateProfile, btnLogout, btnBack;
+    Button btnUpdateProfile, btnLogout;
 
+    LinearLayout btnDashboard, btnInbox, btnEditProfile;
     FirebaseAuth auth;
     DatabaseReference db;
+
+    TextView tvUnreadBadge;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_profile);
+        EdgeToEdge.enable(this);
 
         int paddingPx = (int) TypedValue.applyDimension(
                 TypedValue.COMPLEX_UNIT_DIP, 24, getResources().getDisplayMetrics());
@@ -50,9 +58,15 @@ public class ProfileActivity extends AppCompatActivity {
             return insets;
         });
 
+
+
         initialize();
+        setupNavbar();
+        setupUnreadbadge();
         loadUserData();
     }
+
+
 
     private void initialize() {
         tvUsername = findViewById(R.id.tvUsername);
@@ -63,14 +77,14 @@ public class ProfileActivity extends AppCompatActivity {
         edBio = findViewById(R.id.edBio);
         btnUpdateProfile = findViewById(R.id.btnUpdateProfile);
         btnLogout = findViewById(R.id.btnLogout);
-        btnBack = findViewById(R.id.btnBack);
+
 
         auth = FirebaseAuth.getInstance();
         db = FirebaseDatabase.getInstance().getReference("users");
 
         btnUpdateProfile.setOnClickListener(v -> updateProfile());
 
-        btnBack.setOnClickListener(v -> finish());
+
 
         btnLogout.setOnClickListener(v -> {
             auth.signOut();
@@ -79,6 +93,52 @@ public class ProfileActivity extends AppCompatActivity {
             i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(i);
             finish();
+        });
+    }
+
+    private void setupNavbar() {
+        btnDashboard = findViewById(R.id.btnDashBoard);
+        btnInbox = findViewById(R.id.btnInbox);
+        btnEditProfile = findViewById(R.id.btnEditProfile);
+        tvUnreadBadge = findViewById(R.id.tvUnreadBadge);
+
+        btnDashboard.setOnClickListener(v -> {
+            Intent i = new Intent(this, StudentDashboardActivity.class);
+            i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            startActivity(i);
+        });
+
+        btnInbox.setOnClickListener(v -> startActivity(new Intent(this, InboxActivity.class)));
+
+        btnEditProfile.setOnClickListener(v -> Toast.makeText(this, "Already in Profile", Toast.LENGTH_SHORT).show());
+    }
+
+    private void setupUnreadbadge() {
+        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        DatabaseReference dbChats = FirebaseDatabase.getInstance().getReference("user-chats").child(uid);
+
+        dbChats.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                int unread = 0;
+                for (DataSnapshot chat : snapshot.getChildren()) {
+                    Integer count = chat.child("unreadCount").getValue(Integer.class);
+                    if (count != null)
+                        unread += count;
+                }
+
+                if (unread > 0) {
+                    tvUnreadBadge.setText(String.valueOf(unread));
+                    tvUnreadBadge.setVisibility(TextView.VISIBLE);
+                } else {
+                    tvUnreadBadge.setVisibility(TextView.GONE);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
         });
     }
 
