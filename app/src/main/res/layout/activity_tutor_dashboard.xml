@@ -1,48 +1,139 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:gravity="center"
     android:background="#F7F8FA">
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/tvTitle"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:text="Tutor Dash"
+        android:gravity="center"
+        android:textSize="28sp"
+        android:textStyle="bold"
+        android:textColor="#1A3D7C"
+        android:layout_centerHorizontal="true"/>
+
+    <Button
+        android:id="@+id/btnBackCalendar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/tvTitle"
+        android:layout_toStartOf="@id/tvTitle"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="8dp"
+        android:text="Back"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold"
+        android:backgroundTint="#1A3D7C"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp" />
+
+
+    <View
+        android:id="@+id/titleUnderline"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_below="@id/tvTitle"
+        android:layout_marginHorizontal="16dp"
+        android:background="#1A3D7C" />
+
+    <ListView
+        android:id="@+id/lvWeekly"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/titleUnderline"
+        android:layout_above="@id/bottomNav"
+        android:layout_marginTop="10dp"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="8dp" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/btnSetAvailability"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_above="@id/bottomNav"
+        android:layout_margin="16dp"
+        android:contentDescription="Set my availability"
+        app:backgroundTint="#1A3D7C"
+        app:tint="@android:color/white"
+        app:srcCompat="@drawable/outline_add_circle_24"
+        app:maxImageSize="48dp"/>
+
+    <LinearLayout
+        android:id="@+id/bottomNav"
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:layout_alignParentBottom="true"
         android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:layout_marginBottom="40dp">
+        android:background="#FFFFFF"
+        android:elevation="4dp">
 
-        <TextView
-            android:id="@+id/tvTitle"
+        <LinearLayout
+            android:id="@+id/btnDashBoard"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="Tutor Dashboard"
-            android:textSize="28sp"
-            android:textStyle="bold"
-            android:textColor="#1A3D7C" />
+            android:orientation="vertical"
+            android:gravity="center"
+            android:clickable="true"
+            android:foreground="?attr/selectableItemBackgroundBorderless">
 
-        <FrameLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            <ImageView
+                android:layout_width="35dp"
+                android:layout_height="33dp"
+                android:layout_marginTop="5dp"
+                app:srcCompat="@drawable/outline_add_home_24"/>
 
-            <Button
-                android:id="@+id/btnInbox"
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Messages"
-                android:textSize="12sp"
-                android:textColor="#FFFFFF"
-                android:backgroundTint="#1A3D7C"
-                android:minHeight="40dp"
-                android:paddingHorizontal="12dp" />
+                android:text="Home"
+                android:textSize="15sp"
+                android:layout_marginTop="-5dp"
+                android:textColor="#000000" />
+        </LinearLayout>
+
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <LinearLayout
+                android:id="@+id/btnInbox"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:clickable="true"
+                android:foreground="?attr/selectableItemBackgroundBorderless">
+
+                <ImageView
+                    android:layout_width="35dp"
+                    android:layout_height="33dp"
+                    android:layout_marginTop="5dp"
+                    app:srcCompat="@drawable/outline_add_comment_24" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Messages"
+                    android:textSize="15sp"
+                    android:layout_marginTop="-5dp"
+                    android:textColor="#000000" />
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/tvUnreadBadge"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
                 android:background="@drawable/bg_badge"
                 android:text="1"
                 android:textColor="#FFFFFF"
@@ -50,52 +141,38 @@
                 android:textStyle="bold"
                 android:gravity="center"
                 android:layout_gravity="end|top"
+                android:layout_marginEnd="4dp"
+                android:layout_marginTop="4dp"
                 android:visibility="gone"
-                android:elevation="4dp"/>
+                android:elevation="4dp" />
         </FrameLayout>
+
+        <LinearLayout
+            android:id="@+id/btnEditProfile"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:clickable="true"
+            android:foreground="?attr/selectableItemBackgroundBorderless">
+
+            <ImageView
+                android:layout_width="35dp"
+                android:layout_height="33dp"
+                app:srcCompat="@drawable/round_account_circle_24"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Profile"
+                android:textSize="15sp"
+                android:layout_marginTop="-5dp"
+                android:textColor="#000000" />
+        </LinearLayout>
+
     </LinearLayout>
 
-    <Button
-        android:id="@+id/btnEditProfile"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Edit Profile &amp; Bio"
-        android:textColor="#FFFFFF"
-        android:textStyle="bold"
-        android:backgroundTint="#1A3D7C"
-        android:padding="20dp"
-        android:layout_marginBottom="16dp" />
 
-    <Button
-        android:id="@+id/btnSetAvailability"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Set My Availability"
-        android:textColor="#FFFFFF"
-        android:textStyle="bold"
-        android:backgroundTint="#1A3D7C"
-        android:padding="20dp"
-        android:layout_marginBottom="16dp" />
-
-    <Button
-        android:id="@+id/btnViewBookings"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="View My Bookings"
-        android:textColor="#FFFFFF"
-        android:textStyle="bold"
-        android:backgroundTint="#1A3D7C"
-        android:padding="20dp"
-        android:layout_marginBottom="16dp" />
-
-    <Button
-        android:id="@+id/btnBack"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Logout"
-        android:textColor="#FFFFFF"
-        android:textStyle="bold"
-        android:backgroundTint="#D32F2F"
-        android:padding="12dp" />
-
-</LinearLayout>
+</RelativeLayout>

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F7F8FA">
+
+    <!-- Top Title -->
+    <TextView
+        android:id="@+id/tvTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:text="Tutor Dash"
+        android:textSize="28sp"
+        android:textStyle="bold"
+        android:textColor="#1A3D7C" />
+
+    <View
+        android:id="@+id/titleUnderline"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_below="@id/tvTitle"
+        android:layout_marginHorizontal="16dp"
+        android:background="#1A3D7C" />
+
+    <!-- List Content -->
+    <ListView
+        android:id="@+id/lvWeekly"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/titleUnderline"
+        android:layout_above="@id/bottomNav"
+        android:layout_marginTop="8dp"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="8dp" />
+
+    <!-- Floating Add (+) Button -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabAdd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_above="@id/bottomNav"
+        android:layout_margin="16dp"
+        android:contentDescription="Add"
+        app:backgroundTint="#1A3D7C"
+        app:tint="@android:color/white"
+        app:srcCompat="@drawable/ic_add" />
+
+    <!-- Bottom Navigation Bar -->
+    <LinearLayout
+        android:id="@+id/bottomNav"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal"
+        android:background="#FFFFFF"
+        android:elevation="4dp">
+
+        <TextView
+            android:id="@+id/navHome"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="H"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="#1A3D7C" />
+
+        <TextView
+            android:id="@+id/navMessages"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="M"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="#999999" />
+
+        <TextView
+            android:id="@+id/navProfile"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="P"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="#999999" />
+    </LinearLayout>
+
+</RelativeLayout>
