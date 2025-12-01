@@ -6,6 +6,7 @@ import android.util.TypedValue;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -85,6 +86,11 @@ public class TutorDashboardActivity extends AppCompatActivity {
 
         btnEditProfile.setOnClickListener(v ->
                 startActivity(new Intent(this, ProfileActivity.class)));
+
+        // Handle Dashboard button - stay on this activity or show toast
+        btnDashBoard.setOnClickListener(v -> {
+            Toast.makeText(this, "Already on Dashboard", Toast.LENGTH_SHORT).show();
+        });
 
         setupSchedule();
         setupBadgeListener();

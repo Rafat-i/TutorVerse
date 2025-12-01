@@ -38,16 +38,13 @@ public class InboxActivity extends AppCompatActivity {
 
     LinearLayout btnDashboard, btnInbox, btnEditProfile;
     TextView tvUnreadBadge;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inbox);
 
-
-
-
         lvInbox = findViewById(R.id.lvInbox);
-
 
         if (FirebaseAuth.getInstance().getCurrentUser() == null) {
             finish();
@@ -79,7 +76,23 @@ public class InboxActivity extends AppCompatActivity {
         btnEditProfile = findViewById(R.id.btnEditProfile);
         tvUnreadBadge = findViewById(R.id.tvUnreadBadge);
 
-        btnDashboard.setOnClickListener(v -> startActivity(new Intent(this, StudentDashboardActivity.class)));
+        // Check user role and navigate to correct dashboard
+        btnDashboard.setOnClickListener(v -> {
+            DatabaseReference dbUsers = FirebaseDatabase.getInstance().getReference("users");
+            dbUsers.child(myUid).child("role").get().addOnSuccessListener(snapshot -> {
+                String role = snapshot.getValue(String.class);
+                Intent intent;
+
+                if (role != null && role.trim().equalsIgnoreCase("Tutor")) {
+                    intent = new Intent(this, TutorDashboardActivity.class);
+                } else {
+                    intent = new Intent(this, StudentDashboardActivity.class);
+                }
+
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(intent);
+            });
+        });
 
         btnInbox.setOnClickListener(v -> Toast.makeText(this, "Already in Messages", Toast.LENGTH_SHORT).show());
 
@@ -94,18 +107,18 @@ public class InboxActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 int unread = 0;
-                 for (DataSnapshot chat : snapshot.getChildren()) {
-                     Integer count = chat.child("unreadCount").getValue(Integer.class);
-                     if (count != null)
-                         unread += count;
-                 }
+                for (DataSnapshot chat : snapshot.getChildren()) {
+                    Integer count = chat.child("unreadCount").getValue(Integer.class);
+                    if (count != null)
+                        unread += count;
+                }
 
-                 if (unread > 0) {
-                     tvUnreadBadge.setText(String.valueOf(unread));
-                     tvUnreadBadge.setVisibility(TextView.VISIBLE);
-                 } else {
-                     tvUnreadBadge.setVisibility(TextView.GONE);
-                 }
+                if (unread > 0) {
+                    tvUnreadBadge.setText(String.valueOf(unread));
+                    tvUnreadBadge.setVisibility(TextView.VISIBLE);
+                } else {
+                    tvUnreadBadge.setVisibility(TextView.GONE);
+                }
             }
 
             @Override
@@ -114,8 +127,6 @@ public class InboxActivity extends AppCompatActivity {
             }
         });
     }
-
-
 
     private void loadInbox() {
         DatabaseReference dbUserChats = FirebaseDatabase.getInstance().getReference("user-chats").child(myUid);

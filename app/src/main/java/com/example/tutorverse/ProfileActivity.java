@@ -37,6 +37,8 @@ public class ProfileActivity extends AppCompatActivity {
     DatabaseReference db;
 
     TextView tvUnreadBadge;
+    String myUid;
+    String userRole;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,15 +60,17 @@ public class ProfileActivity extends AppCompatActivity {
             return insets;
         });
 
-
+        if (FirebaseAuth.getInstance().getCurrentUser() == null) {
+            finish();
+            return;
+        }
+        myUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         initialize();
         setupNavbar();
         setupUnreadbadge();
         loadUserData();
     }
-
-
 
     private void initialize() {
         tvUsername = findViewById(R.id.tvUsername);
@@ -78,13 +82,10 @@ public class ProfileActivity extends AppCompatActivity {
         btnUpdateProfile = findViewById(R.id.btnUpdateProfile);
         btnLogout = findViewById(R.id.btnLogout);
 
-
         auth = FirebaseAuth.getInstance();
         db = FirebaseDatabase.getInstance().getReference("users");
 
         btnUpdateProfile.setOnClickListener(v -> updateProfile());
-
-
 
         btnLogout.setOnClickListener(v -> {
             auth.signOut();
@@ -102,10 +103,22 @@ public class ProfileActivity extends AppCompatActivity {
         btnEditProfile = findViewById(R.id.btnEditProfile);
         tvUnreadBadge = findViewById(R.id.tvUnreadBadge);
 
+        // Check user role and navigate to correct dashboard
         btnDashboard.setOnClickListener(v -> {
-            Intent i = new Intent(this, StudentDashboardActivity.class);
-            i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            startActivity(i);
+            DatabaseReference dbUsers = FirebaseDatabase.getInstance().getReference("users");
+            dbUsers.child(myUid).child("role").get().addOnSuccessListener(snapshot -> {
+                String role = snapshot.getValue(String.class);
+                Intent intent;
+
+                if (role != null && role.trim().equalsIgnoreCase("Tutor")) {
+                    intent = new Intent(this, TutorDashboardActivity.class);
+                } else {
+                    intent = new Intent(this, StudentDashboardActivity.class);
+                }
+
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(intent);
+            });
         });
 
         btnInbox.setOnClickListener(v -> startActivity(new Intent(this, InboxActivity.class)));
@@ -156,6 +169,8 @@ public class ProfileActivity extends AppCompatActivity {
                 String email = snapshot.child("email").getValue(String.class);
                 String role = snapshot.child("role").getValue(String.class);
                 String bio = snapshot.child("bio").getValue(String.class);
+
+                userRole = role;
 
                 tvUsername.setText(username);
                 tvEmail.setText(email);
