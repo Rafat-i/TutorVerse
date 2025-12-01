@@ -11,7 +11,7 @@
         android:id="@+id/tvTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Dashboard"
+        android:text="StudentVerse"
         android:textColor="#1A3D7C"
         android:textSize="26sp"
         android:textStyle="bold"
