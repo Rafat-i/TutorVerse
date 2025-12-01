@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F7F8FA">
@@ -11,127 +13,211 @@
         android:layout_above="@+id/bottomNav"
         android:fillViewport="true">
 
-    <LinearLayout
-        android:id="@+id/main"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:layout_marginBottom="24dp">
-
-            <TextView
-                android:id="@+id/tvTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Your Profile"
-                android:textSize="28sp"
-                android:textStyle="bold"
-                android:textColor="#1A3D7C" />
-
-            <View
-                android:layout_width="0dp"
-                android:layout_height="1dp"
-                android:layout_weight="1" />
-
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
             android:orientation="vertical"
-            android:gravity="center">
+            android:paddingHorizontal="24dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="24dp">
 
-            <TextView
-                android:text="Username"
-                android:textStyle="bold"
-                android:textColor="#1A3D7C"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
 
-            <TextView
-                android:id="@+id/tvUsername"
-                android:text="Loading..."
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:textColor="#333333"
-                android:layout_marginBottom="12dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-            <EditText
-                android:id="@+id/edNewUsername"
-                android:hint="Enter new username"
-                android:padding="14dp"
-                android:background="@android:drawable/edit_text"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp" />
-
-            <TextView
-                android:text="Bio (Tell students about yourself)"
-                android:textStyle="bold"
-                android:textColor="#1A3D7C"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="4dp"/>
-
-            <EditText
-                android:id="@+id/edBio"
-                android:hint="e.g., I love teaching Android!"
-                android:padding="14dp"
-                android:background="@android:drawable/edit_text"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:background="#1A3D7C"
+                android:padding="24dp"
                 android:layout_marginBottom="24dp"
-                android:gravity="top|start"
-                android:minLines="3" />
+                android:elevation="4dp">
 
-            <Button
-                android:id="@+id/btnUpdateProfile"
-                android:text="Save Profile"
-                android:textStyle="bold"
-                android:textColor="#FFFFFF"
-                android:backgroundTint="#1A3D7C"
+
+                <androidx.cardview.widget.CardView android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_marginBottom="12dp"
+                    app:cardCornerRadius="50dp"
+                    app:cardElevation="4dp"
+                    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="#FFFFFF"
+                        android:gravity="center">
+
+                        <ImageView
+                            android:layout_width="60dp"
+                            android:layout_height="60dp"
+                            android:src="@drawable/round_account_circle_24"
+                            app:tint="#1A3D7C" />
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <TextView
+                    android:id="@+id/tvUsername"
+                    android:text="Loading..."
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    android:textColor="#FFFFFF"
+                    android:layout_marginBottom="4dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:id="@+id/tvRole"
+                    android:text="Loading..."
+                    android:textSize="14sp"
+                    android:textColor="#FFFFFF"
+                    android:alpha="0.9"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+
+            <androidx.cardview.widget.CardView android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="2dp"
+                xmlns:app="http://schemas.android.com/apk/res-auto">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="20dp"
+                    android:background="#FFFFFF">
+
+                    <TextView
+                        android:text="Edit Profile"
+                        android:textStyle="bold"
+                        android:textColor="#1A3D7C"
+                        android:textSize="18sp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp" />
+
+                    <TextView
+                        android:text="Username"
+                        android:textStyle="bold"
+                        android:textColor="#1A3D7C"
+                        android:textSize="12sp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="4dp" />
+
+                    <EditText
+                        android:id="@+id/edNewUsername"
+                        android:hint="Enter new username"
+                        android:padding="14dp"
+                        android:background="@android:drawable/edit_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="20dp" />
+
+                    <TextView
+                        android:text="Bio (Tell students about yourself)"
+                        android:textStyle="bold"
+                        android:textColor="#1A3D7C"
+                        android:textSize="12sp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="4dp" />
+
+                    <EditText
+                        android:id="@+id/edBio"
+                        android:hint="e.g., I love teaching Android!"
+                        android:padding="14dp"
+                        android:background="@android:drawable/edit_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="20dp"
+                        android:gravity="top|start"
+                        android:minLines="3" />
+
+                    <Button
+                        android:id="@+id/btnUpdateProfile"
+                        android:text="Save Changes"
+                        android:textStyle="bold"
+                        android:textColor="#FFFFFF"
+                        android:backgroundTint="#1A3D7C"
+                        android:layout_width="match_parent"
+                        android:layout_height="56dp"
+                        android:textSize="16sp"
+                        android:elevation="2dp" />
+
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="12dp"
-                android:layout_marginBottom="40dp" />
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="2dp">
 
-            <TextView
-                android:text="Email"
-                android:textStyle="bold"
-                android:textColor="#1A3D7C"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="20dp"
+                    android:background="#FFFFFF">
 
-            <TextView
-                android:id="@+id/tvEmail"
-                android:text="Loading..."
-                android:textSize="16sp"
-                android:layout_marginBottom="24dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                    <TextView
+                        android:text="Account Information"
+                        android:textStyle="bold"
+                        android:textColor="#1A3D7C"
+                        android:textSize="18sp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp" />
 
-            <TextView
-                android:text="Role"
-                android:textStyle="bold"
-                android:textColor="#1A3D7C"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
 
-            <TextView
-                android:id="@+id/tvRole"
-                android:text="Loading..."
-                android:textSize="16sp"
-                android:layout_marginBottom="40dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="12dp"
+                        android:padding="12dp"
+                        android:background="#F7F8FA">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:text="Email Address"
+                                android:textStyle="bold"
+                                android:textColor="#555555"
+                                android:textSize="12sp"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="4dp" />
+
+                            <TextView
+                                android:id="@+id/tvEmail"
+                                android:text="Loading..."
+                                android:textSize="16sp"
+                                android:textColor="#1A3D7C"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content" />
+                        </LinearLayout>
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@android:drawable/ic_dialog_email"
+                            android:layout_gravity="center_vertical"
+                            app:tint="#1A3D7C" />
+                    </LinearLayout>
+
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
 
             <Button
                 android:id="@+id/btnLogout"
@@ -140,11 +226,12 @@
                 android:textColor="#FFFFFF"
                 android:backgroundTint="#D32F2F"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="12dp" />
+                android:layout_height="56dp"
+                android:textSize="16sp"
+                android:elevation="2dp"
+                android:layout_marginTop="8dp" />
 
         </LinearLayout>
-     </LinearLayout>
     </ScrollView>
 
     <include
@@ -153,7 +240,5 @@
         android:layout_width="match_parent"
         android:layout_height="55dp"
         android:layout_alignParentBottom="true" />
-
-
 
 </RelativeLayout>

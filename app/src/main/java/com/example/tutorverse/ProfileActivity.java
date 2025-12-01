@@ -2,7 +2,6 @@ package com.example.tutorverse;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.TypedValue;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -43,20 +42,12 @@ public class ProfileActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_profile);
         EdgeToEdge.enable(this);
-
-        int paddingPx = (int) TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_DIP, 24, getResources().getDisplayMetrics());
+        setContentView(R.layout.activity_profile);
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(
-                    systemBars.left + paddingPx,
-                    systemBars.top + paddingPx,
-                    systemBars.right + paddingPx,
-                    systemBars.bottom + paddingPx
-            );
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
 
