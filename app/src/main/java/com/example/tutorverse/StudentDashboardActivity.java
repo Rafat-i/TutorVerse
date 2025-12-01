@@ -1,19 +1,14 @@
 package com.example.tutorverse;
 
+import androidx.appcompat.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.TypedValue;
-import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
@@ -23,16 +18,25 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import androidx.activity.EdgeToEdge;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+
+
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 public class StudentDashboardActivity extends AppCompatActivity {
 
-    View btnDashboard, btnInbox, btnEditProfile;
-    FloatingActionButton btnBookMeeting;
-    TextView tvUnreadBadge;
+    LinearLayout btnDashboard, btnInbox, btnEditProfile;
+
+    TextView tvUnreadBadge; // New
     ListView lvMyBookings;
+
+    FloatingActionButton btnAdd;
 
     ArrayList<BookingPillAdapter.BookingItem> myBookingList;
     BookingPillAdapter adapter;
@@ -59,22 +63,16 @@ public class StudentDashboardActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         EdgeToEdge.enable(this);
+
         setContentView(R.layout.activity_student_dashboard);
-
-        int paddingPx = (int) TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_DIP, 24, getResources().getDisplayMetrics());
-
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(
-                    systemBars.left + paddingPx,
-                    systemBars.top + paddingPx,
-                    systemBars.right + paddingPx,
-                    systemBars.bottom
-            );
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
 
         if (FirebaseAuth.getInstance().getCurrentUser() == null) {
             finish();
@@ -85,10 +83,17 @@ public class StudentDashboardActivity extends AppCompatActivity {
 
         btnDashboard = findViewById(R.id.btnDashBoard);
         btnEditProfile = findViewById(R.id.btnEditProfile);
+
         btnInbox = findViewById(R.id.btnInbox);
-        btnBookMeeting = findViewById(R.id.btnBookMeeting);
-        tvUnreadBadge = findViewById(R.id.tvUnreadBadge);
+        tvUnreadBadge = findViewById(R.id.tvUnreadBadge); // Init Badge
+
         lvMyBookings = findViewById(R.id.lvMyBookings);
+
+        btnAdd = findViewById(R.id.btnAddBooking);
+
+        btnAdd.setOnClickListener(v -> {
+            startActivity(new Intent(this, CourseSelectionActivity.class));
+        });
 
         myBookingList = new ArrayList<>();
         adapter = new BookingPillAdapter(this, myBookingList);
@@ -101,14 +106,17 @@ public class StudentDashboardActivity extends AppCompatActivity {
             showActionDialog(position);
         });
 
-        btnBookMeeting.setOnClickListener(v ->
-                startActivity(new Intent(this, CourseSelectionActivity.class)));
+        btnDashboard.setOnClickListener(v -> loadBookings());
 
         btnEditProfile.setOnClickListener(v ->
                 startActivity(new Intent(this, ProfileActivity.class)));
 
+
         btnInbox.setOnClickListener(v ->
                 startActivity(new Intent(this, InboxActivity.class)));
+
+
+
 
         setupBadgeListener();
     }
@@ -118,6 +126,7 @@ public class StudentDashboardActivity extends AppCompatActivity {
         super.onResume();
         loadBookings();
     }
+
 
     private void loadBookings() {
         DatabaseReference dbBookings = FirebaseDatabase.getInstance().getReference("bookings");
@@ -142,6 +151,7 @@ public class StudentDashboardActivity extends AppCompatActivity {
                             if (parts.length >= 2) {
                                 String day = parts[0];
                                 int hours = Integer.parseInt(parts[1].split(":")[0]);
+
                                 rawList.add(new RawBooking(tutorUid, "Unknown", course, day, hours, bookingKey));
                             }
                         }
@@ -185,18 +195,22 @@ public class StudentDashboardActivity extends AppCompatActivity {
                     combinedKeys += "," + next.bookingKey;
                 } else {
                     addMergedItem(currentBlock, endHour, combinedKeys);
+
                     currentBlock = next;
                     endHour = next.startHour + 1;
                     combinedKeys = next.bookingKey;
                 }
             }
+
             addMergedItem(currentBlock, endHour, combinedKeys);
+
             adapter.notifyDataSetChanged();
         });
     }
 
     private void addMergedItem(RawBooking start, int endHour, String allKeys) {
         String timeStr = String.format("%s %02d:00 - %02d:00", start.day, start.startHour, endHour);
+
         myBookingList.add(new BookingPillAdapter.BookingItem(start.tutorName, start.tutorUid, allKeys, start.course, timeStr));
     }
 
@@ -206,25 +220,25 @@ public class StudentDashboardActivity extends AppCompatActivity {
         BookingPillAdapter.BookingItem item = myBookingList.get(position);
         String[] options = {"Chat with Tutor", "Complete Session & Review", "Cancel Booking"};
 
-        new AlertDialog.Builder(this)
-                .setTitle("Manage Booking")
-                .setItems(options, (dialog, which) -> {
-                    if (which == 0) {
-                        Intent i = new Intent(this, ChatActivity.class);
+        new AlertDialog.Builder(StudentDashboardActivity.this).setTitle("Manage Booking").setItems(options, (dialog, which) -> {
+                    if(which == 0) {
+                        Intent i = new Intent(StudentDashboardActivity.this, ChatActivity.class);
                         i.putExtra("otherUid", item.tutorUid);
                         i.putExtra("otherName", item.tutorName);
                         startActivity(i);
                     } else if (which == 1) {
-                        Intent i = new Intent(this, ReviewActivity.class);
+                        Intent i = new Intent(StudentDashboardActivity.this, ReviewActivity.class);
                         i.putExtra("tutorUid", item.tutorUid);
                         i.putExtra("tutorName", item.tutorName);
+
                         String firstKey = item.bookingKey.split(",")[0];
                         i.putExtra("bookingKey", firstKey);
+
                         deleteMultiBooking(item.tutorUid, item.bookingKey);
                         startActivity(i);
                     } else {
                         deleteMultiBooking(item.tutorUid, item.bookingKey);
-                        Toast.makeText(this, "Booking Cancelled", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(StudentDashboardActivity.this, "Booking Cancelled", Toast.LENGTH_LONG).show();
                         myBookingList.remove(position);
                         adapter.notifyDataSetChanged();
                     }
@@ -257,9 +271,9 @@ public class StudentDashboardActivity extends AppCompatActivity {
 
                 if (totalUnread > 0) {
                     tvUnreadBadge.setText(String.valueOf(totalUnread));
-                    tvUnreadBadge.setVisibility(View.VISIBLE);
+                    tvUnreadBadge.setVisibility(TextView.VISIBLE);
                 } else {
-                    tvUnreadBadge.setVisibility(View.GONE);
+                    tvUnreadBadge.setVisibility(TextView.GONE);
                 }
             }
 

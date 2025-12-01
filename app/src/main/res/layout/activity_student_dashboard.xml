@@ -6,164 +6,67 @@
     android:layout_height="match_parent"
     android:background="#F7F8FA">
 
+    <!--title-->
     <TextView
         android:id="@+id/tvTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:text="Student Dash"
-        android:gravity="center"
-        android:textSize="28sp"
-        android:textStyle="bold"
+        android:text="Dashboard"
         android:textColor="#1A3D7C"
-        android:layout_centerHorizontal="true"/>
+        android:textSize="26sp"
+        android:textStyle="bold"
+        android:layout_marginTop="16dp"
+        android:layout_centerHorizontal="true"
+        />
 
-    <View
-        android:id="@+id/titleUnderline"
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:layout_below="@id/tvTitle"
-        android:layout_marginHorizontal="16dp"
-        android:background="#1A3D7C" />
 
+    <!--subtitle-->
     <TextView
         android:id="@+id/tvBookingTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="My Upcoming Bookings"
-        android:textColor="#555555"
-        android:textSize="16sp"
+        android:text="My Bookings"
+        android:textColor="#1A3D7C"
+        android:textSize="18sp"
         android:textStyle="bold"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="10dp"
         android:layout_marginStart="20dp"
-        android:layout_below="@+id/titleUnderline" />
-
+        android:layout_below="@+id/tvTitle"
+        />
+    <!--booking list-->
     <ListView
         android:id="@+id/lvMyBookings"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/tvBookingTitle"
         android:layout_above="@id/bottomNav"
-        android:divider="@android:color/transparent"
-        android:dividerHeight="8dp"
-        android:padding="10dp" />
+        android:divider="#CCCCCC"
+        android:dividerHeight="1dp"
+        android:padding="10dp"
+        />
 
+    <!--Floating Add Button-->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/btnBookMeeting"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:id="@+id/btnAddBooking"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
-        android:layout_above="@id/bottomNav"
-        android:layout_margin="16dp"
-        android:contentDescription="Book a meeting"
-        app:backgroundTint="#1A3D7C"
+        android:layout_marginBottom="70dp"
+        android:layout_marginEnd="20dp"
+        android:backgroundTint="#1A3D7C"
         app:tint="@android:color/white"
+        app:maxImageSize="30dp"
+        app:useCompatPadding="false"
+        app:ensureMinTouchTargetSize="false"
         app:srcCompat="@drawable/outline_add_circle_24"
-        app:maxImageSize="48dp"/>
+        />
 
-    <LinearLayout
+    <include
         android:id="@+id/bottomNav"
+        layout="@layout/bottom_nav"
         android:layout_width="match_parent"
         android:layout_height="55dp"
-        android:layout_alignParentBottom="true"
-        android:orientation="horizontal"
-        android:background="#FFFFFF"
-        android:elevation="4dp">
+        android:layout_alignParentBottom="true"/>
 
-        <LinearLayout
-            android:id="@+id/btnDashBoard"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:gravity="center"
-            android:clickable="true"
-            android:foreground="?attr/selectableItemBackgroundBorderless">
-
-            <ImageView
-                android:layout_width="35dp"
-                android:layout_height="33dp"
-                android:layout_marginTop="5dp"
-                app:srcCompat="@drawable/outline_add_home_24"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Home"
-                android:textSize="15sp"
-                android:layout_marginTop="-5dp"
-                android:textColor="#000000" />
-        </LinearLayout>
-
-        <FrameLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1">
-
-            <LinearLayout
-                android:id="@+id/btnInbox"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:gravity="center"
-                android:clickable="true"
-                android:foreground="?attr/selectableItemBackgroundBorderless">
-
-                <ImageView
-                    android:layout_width="35dp"
-                    android:layout_height="33dp"
-                    android:layout_marginTop="5dp"
-                    app:srcCompat="@drawable/outline_add_comment_24" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Messages"
-                    android:textSize="15sp"
-                    android:layout_marginTop="-5dp"
-                    android:textColor="#000000" />
-            </LinearLayout>
-
-            <TextView
-                android:id="@+id/tvUnreadBadge"
-                android:layout_width="18dp"
-                android:layout_height="18dp"
-                android:background="@drawable/bg_badge"
-                android:text="1"
-                android:textColor="#FFFFFF"
-                android:textSize="10sp"
-                android:textStyle="bold"
-                android:gravity="center"
-                android:layout_gravity="end|top"
-                android:layout_marginEnd="4dp"
-                android:layout_marginTop="4dp"
-                android:visibility="gone"
-                android:elevation="4dp" />
-        </FrameLayout>
-
-        <LinearLayout
-            android:id="@+id/btnEditProfile"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:gravity="center"
-            android:clickable="true"
-            android:foreground="?attr/selectableItemBackgroundBorderless">
-
-            <ImageView
-                android:layout_width="35dp"
-                android:layout_height="33dp"
-                app:srcCompat="@drawable/round_account_circle_24" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Profile"
-                android:textSize="15sp"
-                android:layout_marginTop="-5dp"
-                android:textColor="#000000" />
-        </LinearLayout>
-
-    </LinearLayout>
 </RelativeLayout>
