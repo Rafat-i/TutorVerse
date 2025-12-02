@@ -16,7 +16,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Jeff (Tutor)"
+            android:text="@string/chat_item_name_sample"
             android:textSize="18sp"
             android:textStyle="bold"
             android:textColor="#1A3D7C" />
@@ -25,7 +25,7 @@
             android:id="@+id/tvTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="10:30 AM"
+            android:text="@string/chat_item_time_sample"
             android:textSize="12sp"
             android:textColor="#888888" />
     </LinearLayout>
@@ -34,7 +34,7 @@
         android:id="@+id/tvLastMsg"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="You: See you then!"
+        android:text="@string/chat_item_last_message"
         android:textSize="14sp"
         android:textColor="#555555"
         android:maxLines="1"

@@ -22,7 +22,7 @@
         android:id="@+id/tvComment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Great teacher!"
+        android:text="@string/review_sample_comment"
         android:textColor="#333333"
         android:textSize="14sp" />
 

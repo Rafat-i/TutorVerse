@@ -25,12 +25,12 @@
                 android:id="@+id/tvScheduleTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Tutor Availability"
+                android:text="@string/tutor_availability"
                 android:textSize="28sp"
                 android:textStyle="bold"
                 android:textColor="#1A3D7C" />
 
-            <!-- Spacer pushes button to right -->
+
             <View
                 android:layout_width="0dp"
                 android:layout_height="1dp"
@@ -40,7 +40,7 @@
                 android:id="@+id/btnBackSchedule"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Back"
+                android:text="@string/back"
                 android:textStyle="bold"
                 android:textColor="#FFFFFF"
                 android:backgroundTint="#1A3D7C"
@@ -56,7 +56,7 @@
             android:id="@+id/tvSelectedCourse"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Course: -"
+            android:text="@string/course_placeholder"
             android:textSize="18sp"
             android:textColor="#1A3D7C"
             android:layout_marginBottom="10dp" />
@@ -66,7 +66,7 @@
             android:id="@+id/tvSelectedDay"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Tap a day to see tutors."
+            android:text="@string/tap_a_day"
             android:textSize="14sp"
             android:textColor="#555555"
             android:layout_marginBottom="16dp" />
@@ -75,7 +75,7 @@
             android:id="@+id/tvDaySectionHeader"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="▼ Select a day (Mon–Fri)"
+            android:text="@string/select_day"
             android:textSize="16sp"
             android:textStyle="bold"
             android:textColor="#1A3D7C"
@@ -106,7 +106,7 @@
             android:id="@+id/tvTutorSectionHeader"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="▼ Available tutors"
+            android:text="@string/available_tutors"
             android:textSize="16sp"
             android:textStyle="bold"
             android:textColor="#1A3D7C"

@@ -17,7 +17,7 @@
             android:id="@+id/tvCourseTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Select Course"
+            android:text="@string/select_course"
             android:textColor="#1A3D7C"
             android:textSize="28sp"
             android:textStyle="bold" />
@@ -36,7 +36,7 @@
             android:paddingRight="20dp"
             android:paddingTop="8dp"
             android:paddingBottom="8dp"
-            android:text="Back"
+            android:text="@string/back"
             android:textColor="#FFFFFF"
             android:textStyle="bold" />
     </LinearLayout>
@@ -45,7 +45,7 @@
         android:id="@+id/tvCourseInfo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Only courses with tutor availability are shown."
+        android:text="@string/course_info"
         android:textSize="14sp"
         android:textColor="#555555"
         android:layout_marginBottom="12dp" />

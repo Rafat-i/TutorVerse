@@ -24,7 +24,7 @@
             android:layout_marginBottom="20dp">
 
             <TextView
-                android:text="Messages"
+                android:text="@string/messages"
                 android:textSize="28sp"
                 android:textStyle="bold"
                 android:textColor="#1A3D7C"

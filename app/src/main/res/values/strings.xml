@@ -1,3 +1,83 @@
 <resources>
     <string name="app_name">TutorVerse</string>
+    <string name="back">Back</string>
+    <string name="chat">Chat</string>
+    <string name="type_message">Type a message...</string>
+    <string name="select_course">Select Course</string>
+    <string name="course_info">Only courses with tutor availability are shown.</string>
+    <string name="messages">Messages</string>
+    <string name="login">Login</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="register_link">Don\'t have an account? Register</string>
+    <string name="loading">Loading...</string>
+    <string name="edit_profile">Edit Profile</string>
+    <string name="username">Username</string>
+    <string name="enter_new_username">Enter new username</string>
+    <string name="bio_label">Bio (Tell us about yourself)</string>
+    <string name="bio_hint">e.g., I love teaching Android!</string>
+    <string name="save_changes">Save Changes</string>
+    <string name="account_information">Account Information</string>
+    <string name="email_address">Email Address</string>
+    <string name="logout">Logout</string>
+    <string name="create_account">Create Account</string>
+    <string name="student">Student</string>
+    <string name="tutor">Tutor</string>
+    <string name="register">Register</string>
+    <string name="already_have_account">Already have an account? Login</string>
+    <string name="rate_your_session">Rate Your Session</string>
+    <string name="tutor_name_placeholder">Tutor: Jeff</string>
+    <string name="how_was_session">How was the session?</string>
+    <string name="submit_review">Submit Review</string>
+    <string name="tutor_availability">Tutor Availability</string>
+    <string name="course_placeholder">Course: -</string>
+    <string name="tap_a_day">Tap a day to see tutors.</string>
+    <string name="select_day">▼ Select a day (Mon–Fri)</string>
+    <string name="available_tutors">▼ Available tutors</string>
+    <string name="my_bookings">My Bookings</string>
+    <string name="tap_booking">Tap a booking to cancel it.</string>
+    <string name="studentverse">StudentVerse</string>
+    <string name="set_availability">Set Availability</string>
+    <string name="course_label">Course</string>
+    <string name="day_of_week">Day of week</string>
+    <string name="from_time">From time</string>
+    <string name="to_time">To time</string>
+    <string name="save_availability">Save Availability</string>
+    <string name="day_preview">Day Preview</string>
+    <string name="weekly_schedule">Weekly Schedule</string>
+    <string name="mon">Mon</string>
+    <string name="tue">Tue</string>
+    <string name="wed">Wed</string>
+    <string name="thu">Thu</string>
+    <string name="fri">Fri</string>
+    <string name="tutorverse">TutorVerse</string>
+    <string name="set_my_availability">Set my availability</string>
+    <string name="tutor_profile">Tutor Profile</string>
+    <string name="tutor_name_sample">Jeff</string>
+    <string name="loading_rating">Loading rating...</string>
+    <string name="message">Message</string>
+    <string name="about">About</string>
+    <string name="loading_bio">Loading bio...</string>
+    <string name="student_reviews">Student Reviews</string>
+    <string name="home">Home</string>
+    <string name="profile">Profile</string>
+    <string name="course_name">Course Name</string>
+    <string name="tutor_name_placeholder_card">Tutor: Jeff</string>
+    <string name="sample_booking_time">Monday 08:00</string>
+    <string name="chat_sample_message">Hello world</string>
+    <string name="chat_item_name_sample">Jeff (Tutor)</string>
+    <string name="chat_item_time_sample">10:30 AM</string>
+    <string name="chat_item_last_message">You: See you then!</string>
+    <string name="review_sample_comment">Great teacher!</string>
+    <string name="day_mon">Mon</string>
+    <string name="tutor_name">Tutor Name</string>
+    <string name="tutor_rating_sample">★ 4.5</string>
+    <string name="subject_sample">Subject</string>
+    <string name="time_range_sample">Day 15:00 - 16:00</string>
+    <string name="book">Book</string>
+
+
+
+
+
 </resources>

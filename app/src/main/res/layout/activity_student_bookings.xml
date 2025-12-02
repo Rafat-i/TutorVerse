@@ -14,7 +14,7 @@
         android:layout_marginBottom="20dp">
 
         <TextView
-            android:text="My Bookings"
+            android:text="@string/my_bookings"
             android:textSize="28sp"
             android:textStyle="bold"
             android:textColor="#1A3D7C"
@@ -28,7 +28,7 @@
 
         <Button
             android:id="@+id/btnBack"
-            android:text="Back"
+            android:text="@string/back"
             android:textColor="#FFFFFF"
             android:backgroundTint="#1A3D7C"
             android:layout_width="wrap_content"
@@ -36,7 +36,7 @@
     </LinearLayout>
 
     <TextView
-        android:text="Tap a booking to cancel it."
+        android:text="@string/tap_booking"
         android:textColor="#555555"
         android:layout_marginBottom="12dp"
         android:layout_width="wrap_content"

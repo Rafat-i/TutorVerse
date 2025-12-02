@@ -56,7 +56,7 @@
 
                 <TextView
                     android:id="@+id/tvUsername"
-                    android:text="Loading..."
+                    android:text="@string/loading"
                     android:textSize="24sp"
                     android:textStyle="bold"
                     android:textColor="#FFFFFF"
@@ -66,7 +66,7 @@
 
                 <TextView
                     android:id="@+id/tvRole"
-                    android:text="Loading..."
+                    android:text="@string/loading"
                     android:textSize="14sp"
                     android:textColor="#FFFFFF"
                     android:alpha="0.9"
@@ -90,7 +90,7 @@
                     android:background="#FFFFFF">
 
                     <TextView
-                        android:text="Edit Profile"
+                        android:text="@string/edit_profile"
                         android:textStyle="bold"
                         android:textColor="#1A3D7C"
                         android:textSize="18sp"
@@ -99,7 +99,7 @@
                         android:layout_marginBottom="16dp" />
 
                     <TextView
-                        android:text="Username"
+                        android:text="@string/username"
                         android:textStyle="bold"
                         android:textColor="#1A3D7C"
                         android:textSize="12sp"
@@ -109,7 +109,7 @@
 
                     <EditText
                         android:id="@+id/edNewUsername"
-                        android:hint="Enter new username"
+                        android:hint="@string/enter_new_username"
                         android:padding="14dp"
                         android:background="@android:drawable/edit_text"
                         android:layout_width="match_parent"
@@ -117,7 +117,7 @@
                         android:layout_marginBottom="20dp" />
 
                     <TextView
-                        android:text="Bio (Tell students about yourself)"
+                        android:text="@string/bio_label"
                         android:textStyle="bold"
                         android:textColor="#1A3D7C"
                         android:textSize="12sp"
@@ -127,7 +127,7 @@
 
                     <EditText
                         android:id="@+id/edBio"
-                        android:hint="e.g., I love teaching Android!"
+                        android:hint="@string/bio_hint"
                         android:padding="14dp"
                         android:background="@android:drawable/edit_text"
                         android:layout_width="match_parent"
@@ -138,7 +138,7 @@
 
                     <Button
                         android:id="@+id/btnUpdateProfile"
-                        android:text="Save Changes"
+                        android:text="@string/save_changes"
                         android:textStyle="bold"
                         android:textColor="#FFFFFF"
                         android:backgroundTint="#1A3D7C"
@@ -166,7 +166,7 @@
                     android:background="#FFFFFF">
 
                     <TextView
-                        android:text="Account Information"
+                        android:text="@string/account_information"
                         android:textStyle="bold"
                         android:textColor="#1A3D7C"
                         android:textSize="18sp"
@@ -190,7 +190,7 @@
                             android:orientation="vertical">
 
                             <TextView
-                                android:text="Email Address"
+                                android:text="@string/email_address"
                                 android:textStyle="bold"
                                 android:textColor="#555555"
                                 android:textSize="12sp"
@@ -200,7 +200,7 @@
 
                             <TextView
                                 android:id="@+id/tvEmail"
-                                android:text="Loading..."
+                                android:text="@string/loading"
                                 android:textSize="16sp"
                                 android:textColor="#1A3D7C"
                                 android:layout_width="wrap_content"
@@ -221,7 +221,7 @@
 
             <Button
                 android:id="@+id/btnLogout"
-                android:text="Logout"
+                android:text="@string/logout"
                 android:textStyle="bold"
                 android:textColor="#FFFFFF"
                 android:backgroundTint="#D32F2F"

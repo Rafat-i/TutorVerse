@@ -10,7 +10,7 @@
         android:id="@+id/tvDay"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Mon"
+        android:text="@string/day_mon"
         android:textSize="16sp"
         android:textColor="#1A3D7C"
         android:gravity="center" />

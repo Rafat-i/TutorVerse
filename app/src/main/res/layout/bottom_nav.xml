@@ -28,7 +28,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Home"
+            android:text="@string/home"
             android:textSize="15sp"
             android:layout_marginTop="-5dp"
             android:textColor="#000000" />
@@ -57,7 +57,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Messages"
+                android:text="@string/messages"
                 android:textSize="15sp"
                 android:layout_marginTop="-5dp"
                 android:textColor="#000000" />
@@ -99,7 +99,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Profile"
+            android:text="@string/profile"
             android:textSize="15sp"
             android:layout_marginTop="-5dp"
             android:textColor="#000000" />

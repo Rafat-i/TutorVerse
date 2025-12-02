@@ -19,7 +19,7 @@
         android:adjustViewBounds="true" />
 
     <TextView
-        android:text="Create Account"
+        android:text="@string/create_account"
         android:textSize="28sp"
         android:textStyle="bold"
         android:textColor="#1A3D7C"
@@ -29,7 +29,7 @@
 
     <EditText
         android:id="@+id/edUsername"
-        android:hint="Username"
+        android:hint="@string/username"
         android:padding="14dp"
         android:background="@android:drawable/edit_text"
         android:layout_width="match_parent"
@@ -38,7 +38,7 @@
 
     <EditText
         android:id="@+id/edEmail"
-        android:hint="Email"
+        android:hint="@string/email"
         android:inputType="textEmailAddress"
         android:padding="14dp"
         android:background="@android:drawable/edit_text"
@@ -48,7 +48,7 @@
 
     <EditText
         android:id="@+id/edPassword"
-        android:hint="Password"
+        android:hint="@string/password"
         android:inputType="textPassword"
         android:padding="14dp"
         android:background="@android:drawable/edit_text"
@@ -65,7 +65,7 @@
 
         <RadioButton
             android:id="@+id/rbStudent"
-            android:text="Student"
+            android:text="@string/student"
             android:textColor="#1A3D7C"
             android:checked="true"
             android:layout_width="wrap_content"
@@ -73,7 +73,7 @@
 
         <RadioButton
             android:id="@+id/rbTutor"
-            android:text="Tutor"
+            android:text="@string/tutor"
             android:textColor="#1A3D7C"
             android:layout_marginStart="24dp"
             android:layout_width="wrap_content"
@@ -82,7 +82,7 @@
 
     <Button
         android:id="@+id/btnRegister"
-        android:text="Register"
+        android:text="@string/register"
         android:textStyle="bold"
         android:textColor="#FFFFFF"
         android:backgroundTint="#1A3D7C"
@@ -93,7 +93,7 @@
 
     <TextView
         android:id="@+id/tvLoginLink"
-        android:text="Already have an account? Login"
+        android:text="@string/already_have_account"
         android:textSize="14sp"
         android:textColor="#1A3D7C"
         android:layout_width="wrap_content"

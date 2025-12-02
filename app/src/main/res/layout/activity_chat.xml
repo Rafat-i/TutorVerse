@@ -19,7 +19,7 @@
             android:id="@+id/btnBack"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Back"
+            android:text="@string/back"
             android:textSize="16sp"
             android:textColor="#FFFFFF"
             android:background="@android:color/transparent"
@@ -31,7 +31,7 @@
             android:id="@+id/tvChatTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Chat"
+            android:text="@string/chat"
             android:textSize="20sp"
             android:textStyle="bold"
             android:textColor="#FFFFFF" />
@@ -58,7 +58,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:hint="Type a message..."
+            android:hint="@string/type_message"
             android:padding="12dp"
             android:background="@android:drawable/edit_text" />
 

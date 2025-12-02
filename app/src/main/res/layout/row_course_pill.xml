@@ -15,7 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="20dp"
-        android:text="Course Name"
+        android:text="@string/course_name"
         android:textSize="18sp"
         android:textStyle="bold"
         android:textColor="#FFFFFF"

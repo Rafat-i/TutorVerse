@@ -18,7 +18,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Tutor Profile"
+            android:text="@string/tutor_profile"
             android:textSize="20sp"
             android:textStyle="bold"
             android:textColor="#FFFFFF" />
@@ -27,7 +27,7 @@
             android:id="@+id/btnBack"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Back"
+            android:text="@string/back"
             android:textColor="#FFFFFF"
             android:textStyle="bold"
             android:backgroundTint="#00000000"
@@ -63,7 +63,7 @@
                         android:id="@+id/tvTutorName"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Jeff"
+                        android:text="@string/tutor_name_sample"
                         android:textSize="28sp"
                         android:textStyle="bold"
                         android:textColor="#1A3D7C" />
@@ -72,7 +72,7 @@
                         android:id="@+id/tvAvgRating"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Loading rating..."
+                        android:text="@string/loading_rating"
                         android:textSize="16sp"
                         android:textStyle="bold"
                         android:textColor="#FFB74D"
@@ -83,7 +83,7 @@
                     android:id="@+id/btnMessage"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Message"
+                    android:text="@string/message"
                     android:textColor="#FFFFFF"
                     android:backgroundTint="#1A3D7C" />
             </LinearLayout>
@@ -91,7 +91,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="About"
+                android:text="@string/about"
                 android:textStyle="bold"
                 android:textColor="#1A3D7C"
                 android:layout_marginBottom="8dp" />
@@ -100,7 +100,7 @@
                 android:id="@+id/tvBio"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Loading bio..."
+                android:text="@string/loading_bio"
                 android:textSize="16sp"
                 android:textColor="#555555"
                 android:layout_marginBottom="24dp"
@@ -115,7 +115,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Student Reviews"
+                android:text="@string/student_reviews"
                 android:textStyle="bold"
                 android:textColor="#1A3D7C"
                 android:layout_marginBottom="12dp" />

@@ -23,7 +23,7 @@
                 android:id="@+id/tvTutorName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Tutor Name"
+                android:text="@string/tutor_name"
                 android:textStyle="bold"
                 android:textColor="#1A3D7C"
                 android:textSize="16sp"
@@ -33,7 +33,7 @@
                 android:id="@+id/tvRating"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="★ 4.5"
+                android:text="@string/tutor_rating_sample"
                 android:textColor="#FFB74D"
                 android:textStyle="bold"
                 android:textSize="14sp"
@@ -44,7 +44,7 @@
             android:id="@+id/tvSubject"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Subject"
+            android:text="@string/subject_sample"
             android:textColor="#444444"
             android:textSize="14sp" />
 
@@ -52,7 +52,7 @@
             android:id="@+id/tvTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Day 15:00 - 16:00"
+            android:text="@string/time_range_sample"
             android:textColor="#777777"
             android:textSize="13sp" />
     </LinearLayout>
@@ -61,7 +61,7 @@
         android:id="@+id/btnBook"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Book"
+        android:text="@string/book"
         android:textStyle="bold"
         android:textColor="#FFFFFF"
         android:backgroundTint="#1A3D7C"

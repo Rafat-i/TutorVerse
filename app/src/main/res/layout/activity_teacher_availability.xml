@@ -22,7 +22,7 @@
                 android:id="@+id/tvTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Set Availability"
+                android:text="@string/set_availability"
                 android:textSize="28sp"
                 android:textStyle="bold"
                 android:textColor="#1A3D7C" />
@@ -36,7 +36,7 @@
                 android:id="@+id/btnBack"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Back"
+                android:text="@string/back"
                 android:textColor="#FFFFFF"
                 android:textStyle="bold"
                 android:backgroundTint="#1A3D7C"
@@ -49,7 +49,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Course"
+            android:text="@string/course_label"
             android:textStyle="bold"
             android:textColor="#1A3D7C"
             android:layout_marginBottom="4dp" />
@@ -64,7 +64,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Day of week"
+            android:text="@string/day_of_week"
             android:textStyle="bold"
             android:textColor="#1A3D7C"
             android:layout_marginBottom="4dp" />
@@ -93,7 +93,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="From time"
+                    android:text="@string/from_time"
                     android:textStyle="bold"
                     android:textColor="#1A3D7C"
                     android:layout_marginBottom="4dp" />
@@ -115,7 +115,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="To time"
+                    android:text="@string/to_time"
                     android:textStyle="bold"
                     android:textColor="#1A3D7C"
                     android:layout_marginBottom="4dp" />
@@ -132,7 +132,7 @@
             android:id="@+id/btnSaveAvailability"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Save Availability"
+            android:text="@string/save_availability"
             android:textStyle="bold"
             android:textColor="#FFFFFF"
             android:backgroundTint="#1A3D7C"
@@ -148,7 +148,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Day Preview"
+            android:text="@string/day_preview"
             android:textSize="20sp"
             android:textStyle="bold"
             android:textColor="#1A3D7C"
